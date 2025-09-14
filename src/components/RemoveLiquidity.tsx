@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Info } from 'lucide-react';
 import { Web3Service } from '../utils/web3';
 import { TOKENS } from '../config/tokens';
+import { CONTRACTS } from '../config/contracts';
 
 interface RemoveLiquidityProps {
   onBack: () => void;
@@ -127,7 +128,7 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
         await web3Service.approveToken(
           position.pairAddress, // LP token address
           liquidityToRemove,
-          web3Service.getRouterAddress()
+          CONTRACTS.ROUTER
         );
       } catch (approvalError: any) {
         console.error('LP token approval error:', approvalError);
