@@ -424,6 +424,53 @@ export class Web3Service {
     }
   }
 
+  async detectTokenFee(tokenAddress: string): Promise<boolean> {
+    if (!this.provider || !tokenAddress || tokenAddress === ethers.ZeroAddress) {
+      return false;
+    }
+
+    try {
+      // Check for known fee tokens first
+      const knownFeeTokens = [
+        '0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE', // SC - Strat Core
+        // Add other known fee tokens here
+      ];
+
+      if (knownFeeTokens.some(addr => addr.toLowerCase() === tokenAddress.toLowerCase())) {
+        return true;
+      }
+
+      // Try to detect tax/fee functions in the contract
+      const contract = new ethers.Contract(tokenAddress, TOKEN_TAX_DETECTOR_ABI, this.provider);
+      
+      try {
+        // Check if contract has tax status function
+        const taxStatus = await contract.taxStatus().catch(() => null);
+        if (taxStatus !== null) {
+          return taxStatus;
+        }
+      } catch (error) {
+        // Contract doesn't have tax functions, assume no fees
+      }
+
+      // Additional checks for common fee patterns
+      try {
+        const hasOwner = await contract.owner().catch(() => null);
+        if (hasOwner) {
+          // If contract has owner, it might have fees - be cautious
+          return false; // Changed to false to avoid unnecessary fee assumptions
+        }
+      } catch (error) {
+        // No owner function, likely standard token
+      }
+
+      return false;
+    } catch (error) {
+      console.error(`Error detecting token fee for ${tokenAddress}:`, error);
+      return false; // Default to no fees to avoid unnecessary slippage
+    }
+  }
+
   async getAllTokenBalances(): Promise<{ [key: string]: string }> {
     if (!this.isConnected()) {
       return Object.fromEntries(
@@ -491,7 +538,7 @@ export class Web3Service {
       const fromTokenHasFee = await this.detectTokenFee(fromToken.address);
       const toTokenHasFee = await this.detectTokenFee(toToken.address);
       
-      // Especial handling para Strat Core (SC) y otros tokens con fees conocidos
+      // Special handling para Strat Core (SC) y otros tokens con fees conocidos
       const isStratCore = fromToken.symbol === 'SC' || toToken.symbol === 'SC';
       const hasFeeOnTransfer = fromTokenHasFee || toTokenHasFee || isStratCore;
 
@@ -503,13 +550,13 @@ export class Web3Service {
 
         let finalAmount = ethers.formatUnits(amounts[1], toToken.decimals || 18);
 
-        // Ajustar estimación para tokens con fees
+        // Ajustar estimación solo para tokens con fees confirmados
         if (hasFeeOnTransfer) {
-          let adjustmentFactor = 0.85; // Default 15% reduction
+          let adjustmentFactor = 0.98; // Reduced to 2% reduction
           
-          // Ajustes específicos para tokens conocidos
+          // Ajustes específicos solo para tokens conocidos con fees altos
           if (isStratCore) {
-            adjustmentFactor = 0.80; // 20% reduction para Strat Core
+            adjustmentFactor = 0.95; // 5% reduction para Strat Core
           }
           
           const adjustedAmount = parseFloat(finalAmount) * adjustmentFactor;
@@ -593,10 +640,10 @@ export class Web3Service {
       const isStratCore = fromToken.symbol === 'SC' || toToken.symbol === 'SC';
       const hasFeeOnTransfer = fromTokenHasFee || toTokenHasFee || isStratCore;
       
-      // Para tokens con fees, usar un minimum output más conservador
+      // Para tokens con fees confirmados, usar un minimum output ligeramente más conservador
       let adjustedAmountOutMin = amountOutMin;
       if (hasFeeOnTransfer && parseFloat(amountOutMin) > 0) {
-        const reduction = isStratCore ? 0.75 : 0.85; // Más conservador para Strat Core
+        const reduction = isStratCore ? 0.97 : 0.99; // Mucho menos conservador
         adjustedAmountOutMin = (parseFloat(amountOutMin) * reduction).toString();
       }
 
@@ -638,26 +685,26 @@ export class Web3Service {
 
       const estimateGas = async (method: string, args: any[], value?: bigint) => {
         try {
-          // Para tokens con fee, usar un gas límite más alto
-          const baseGasLimit = hasFeeOnTransfer ? 1000000n : 500000n;
+          // Gas límite base más conservador
+          const baseGasLimit = hasFeeOnTransfer ? 300000n : 200000n;
           
           try {
             const estimatedGas = await this.router!.estimateGas[method](...args, { value });
-            // Aumentar el buffer para tokens con fee
-            const gasBuffer = hasFeeOnTransfer ? 200n : 130n;
+            // Buffer de gas más razonable
+            const gasBuffer = hasFeeOnTransfer ? 120n : 110n;
             return estimatedGas * gasBuffer / 100n;
           } catch (gasError) {
-            console.warn('Gas estimation failed, using fallback value for fee token:', gasError);
+            console.warn('Gas estimation failed, using fallback value:', gasError);
             return baseGasLimit;
           }
         } catch (error) {
           console.warn('Gas estimation failed, using fallback value', error);
-          return hasFeeOnTransfer ? 1000000n : 500000n;
+          return baseGasLimit;
         }
       };
 
-      const feeData = await this.provider.getFeeData();
-      const gasPrice = feeData.gasPrice || (await this.provider.getGasPrice());
+      // Dejar que la red determine el gas price automáticamente
+      // No forzar un gasPrice específico
 
       let tx;
       let receipt;
@@ -665,7 +712,6 @@ export class Web3Service {
       try {
         if (fromToken.symbol === 'CORE') {
           if (hasFeeOnTransfer) {
-            // Usar función específica para tokens con fee
             const gasLimit = await estimateGas(
               'swapExactETHForTokensSupportingFeeOnTransferTokens',
               [parsedAmountOutMin, path, address, deadline],
@@ -676,11 +722,7 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { 
-                gasLimit,
-                gasPrice,
-                value: parsedAmountIn
-              }
+              { gasLimit, value: parsedAmountIn }
             );
           } else {
             const gasLimit = await estimateGas(
@@ -693,16 +735,11 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { 
-                gasLimit,
-                gasPrice,
-                value: parsedAmountIn
-              }
+              { gasLimit, value: parsedAmountIn }
             );
           }
         } else if (toToken.symbol === 'CORE') {
           if (hasFeeOnTransfer) {
-            // Usar función específica para tokens con fee
             const gasLimit = await estimateGas(
               'swapExactTokensForETHSupportingFeeOnTransferTokens',
               [parsedAmountIn, parsedAmountOutMin, path, address, deadline]
@@ -713,7 +750,7 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit, gasPrice }
+              { gasLimit }
             );
           } else {
             const gasLimit = await estimateGas(
@@ -726,12 +763,11 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit, gasPrice }
+              { gasLimit }
             );
           }
         } else {
           if (hasFeeOnTransfer) {
-            // Usar función específica para tokens con fee
             const gasLimit = await estimateGas(
               'swapExactTokensForTokensSupportingFeeOnTransferTokens',
               [parsedAmountIn, parsedAmountOutMin, path, address, deadline]
@@ -742,7 +778,7 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit, gasPrice }
+              { gasLimit }
             );
           } else {
             const gasLimit = await estimateGas(
@@ -755,7 +791,7 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit, gasPrice }
+              { gasLimit }
             );
           }
         }
