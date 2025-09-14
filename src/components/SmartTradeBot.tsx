@@ -203,7 +203,7 @@ const SmartTradeBot: React.FC = () => {
 
   // Obtener el proveedor para la red Core
   const getProvider = () => {
-    return new ethers.providers.JsonRpcProvider('https://rpc.coredao.org', {
+    return new ethers.JsonRpcProvider('https://rpc.coredao.org', {
       name: 'Core',
       chainId: 1116, // Chain ID de Core Mainnet
     });
@@ -242,7 +242,7 @@ const SmartTradeBot: React.FC = () => {
       
       // Obtener balance nativo (CORE)
       const nativeBalance = await provider.getBalance(walletAddress);
-      setNativeBalance(ethers.utils.formatEther(nativeBalance));
+      setNativeBalance(ethers.formatEther(nativeBalance));
       
       // Obtener balances de tokens
       const tokens = Object.values(allTokens);
@@ -255,7 +255,7 @@ const SmartTradeBot: React.FC = () => {
             return {
               symbol: token.symbol,
               balance: balance.toString(),
-              formattedBalance: ethers.utils.formatUnits(balance, token.decimals),
+              formattedBalance: ethers.formatUnits(balance, token.decimals),
               decimals: token.decimals
             };
           } catch (err) {
@@ -284,13 +284,13 @@ const SmartTradeBot: React.FC = () => {
       
       // Obtener precio estimado para 1 CORE
       const amountsOut = await router.getAmountsOut(
-        ethers.utils.parseUnits('1', allTokens.CORE.decimals),
+        ethers.parseUnits('1', allTokens.CORE.decimals),
         path
       );
       
       const tokenSymbol = Object.keys(allTokens).find(key => allTokens[key].address === tokenAddress);
       const tokenDecimals = allTokens[tokenSymbol || '']?.decimals || 18;
-      const price = ethers.utils.formatUnits(amountsOut[1], tokenDecimals);
+      const price = ethers.formatUnits(amountsOut[1], tokenDecimals);
       setCurrentPrice(price);
     } catch (err) {
       console.error('Error fetching price:', err);
@@ -351,8 +351,8 @@ const SmartTradeBot: React.FC = () => {
       const tokenDecimals = allTokens[tokenSymbol || '']?.decimals || 18;
       
       const path = [allTokens.CORE.address, tokenAddress];
-      const amountIn = ethers.utils.parseUnits(order.quantity, allTokens.CORE.decimals);
-      const amountOutMin = ethers.utils.parseUnits('0', tokenDecimals); // Ajustar según necesidad
+      const amountIn = ethers.parseUnits(order.quantity, allTokens.CORE.decimals);
+      const amountOutMin = ethers.parseUnits('0', tokenDecimals); // Ajustar según necesidad
       
       // Establecer deadline 20 minutos en el futuro
       const deadline = Math.floor(Date.now() / 1000) + 1200;
@@ -371,7 +371,7 @@ const SmartTradeBot: React.FC = () => {
         // Orden limit - necesitamos verificar el precio primero
         const expectedAmountOut = await router.getAmountsOut(amountIn, path);
         const expectedPrice = parseFloat(
-          ethers.utils.formatUnits(expectedAmountOut[1], tokenDecimals)
+          ethers.formatUnits(expectedAmountOut[1], tokenDecimals)
         );
         
         const targetPrice = parseFloat(order.buyPrice);
@@ -454,7 +454,7 @@ const SmartTradeBot: React.FC = () => {
     
     try {
       // Validar dirección
-      ethers.utils.getAddress(newToken.address);
+      ethers.getAddress(newToken.address);
       
       // Validar que el símbolo no exista ya (case insensitive)
       if (Object.keys(allTokens).some(s => s.toLowerCase() === newToken.symbol.toLowerCase())) {
