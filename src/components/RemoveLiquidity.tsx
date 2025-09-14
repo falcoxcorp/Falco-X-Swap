@@ -96,7 +96,9 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
       const liquidityToRemove =
         percentage === 100 ? position.balance : calculateAmount(position.balance, percentage);
 
-      const slippageMultiplier = 1 - parseFloat(AUTO_SLIPPAGE) / 100;
+      // Use much more conservative slippage for remove liquidity (30% instead of 20%)
+      const CONSERVATIVE_SLIPPAGE = '30.0';
+      const slippageMultiplier = 1 - parseFloat(CONSERVATIVE_SLIPPAGE) / 100;
 
       // Calculate minimum amounts with slippage
       const token0Min =
@@ -109,21 +111,20 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
           ? (parseFloat(position.token1Balance) * slippageMultiplier).toFixed(position.token1.decimals)
           : (parseFloat(token1Amount) * slippageMultiplier).toFixed(position.token1.decimals);
 
+      // Additional validation to prevent reversion
+      if (parseFloat(liquidityToRemove) <= 0) {
+        setError('Invalid liquidity amount to remove.');
+        return;
+      }
+
+      if (parseFloat(token0Min) < 0 || parseFloat(token1Min) < 0) {
+        setError('Invalid minimum amounts calculated.');
+        return;
+      }
+
       // Convert CORE to WCORE for contract interaction
       const token0 = position.token0.symbol === 'CORE' ? TOKENS.WCORE : position.token0;
       const token1 = position.token1.symbol === 'CORE' ? TOKENS.WCORE : position.token1;
-
-      // Ensure the amounts are valid
-      if (parseFloat(liquidityToRemove) <= 0 || parseFloat(token0Min) <= 0 || parseFloat(token1Min) <= 0) {
-        setError('Invalid amounts calculated. Please try again.');
-        return;
-      }
-
-      // Ensure the user has enough balance
-      if (parseFloat(liquidityToRemove) > parseFloat(position.balance)) {
-        setError('Insufficient liquidity balance.');
-        return;
-      }
 
       // Remove liquidity in WCORE
       await web3Service.removeLiquidity(
@@ -140,12 +141,14 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
       onBack();
     } catch (error: any) {
       console.error('Remove liquidity error:', error);
-      if (error.message?.includes('ds-math-sub-underflow')) {
-        setError('Failed to remove liquidity due to insufficient balance. Please try again.');
-      } else if (error.message === 'Transaction was rejected by user') {
+      if (error.message === 'Transaction was rejected by user') {
         setError('You rejected the transaction');
-      } else if (error.message?.includes('execution reverted')) {
-        setError('Transaction failed. Please check your inputs and try again.');
+      } else if (error.message?.includes('execution reverted') || error.message?.includes('CALL_EXCEPTION')) {
+        setError('Transaction failed due to price changes or slippage. Please try again or increase slippage tolerance.');
+      } else if (error.message?.includes('ds-math-sub-underflow')) {
+        setError('Insufficient liquidity balance. Please check your LP token balance.');
+      } else if (error.message?.includes('price changes') || error.message?.includes('slippage')) {
+        setError('Transaction failed due to market conditions. Please try again with higher slippage tolerance.');
       } else {
         setError(error.message || 'Failed to remove liquidity');
       }

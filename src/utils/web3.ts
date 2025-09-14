@@ -1052,23 +1052,50 @@ export class Web3Service {
         throw new Error('Invalid liquidity amount');
       }
 
-      const roundedLiquidity = Number(liquidity).toFixed(18);
-      const roundedToken0Min = Number(token0Min).toFixed(token0.decimals || 18);
-      const roundedToken1Min = Number(token1Min).toFixed(token1.decimals || 18);
+      // Use more conservative minimum amounts to prevent reversion
+      const liquidityBigInt = ethers.parseUnits(liquidity, 18);
+      
+      // Apply additional safety margin for minimum amounts (reduce by 50% more)
+      const safetyMargin = 0.5; // 50% reduction for extra safety
+      const adjustedToken0Min = (parseFloat(token0Min) * safetyMargin).toString();
+      const adjustedToken1Min = (parseFloat(token1Min) * safetyMargin).toString();
+      
+      // Ensure minimum amounts are not zero but also not too restrictive
+      const finalToken0Min = Math.max(parseFloat(adjustedToken0Min), 0.000001).toString();
+      const finalToken1Min = Math.max(parseFloat(adjustedToken1Min), 0.000001).toString();
 
-      const parsedLiquidity = ethers.parseUnits(roundedLiquidity, 18);
-      const parsedToken0Min = ethers.parseUnits(roundedToken0Min, token0.decimals || 18);
-      const parsedToken1Min = ethers.parseUnits(roundedToken1Min, token1.decimals || 18);
+      const parsedLiquidity = liquidityBigInt;
+      const parsedToken0Min = ethers.parseUnits(finalToken0Min, token0.decimals || 18);
+      const parsedToken1Min = ethers.parseUnits(finalToken1Min, token1.decimals || 18);
 
       const feeData = await this.provider.getFeeData();
       const gasPrice = feeData.gasPrice || (await this.provider.getGasPrice());
 
+      // Check if we're dealing with fee-on-transfer tokens
+      const token0HasFee = await this.detectTokenFee(token0.address);
+      const token1HasFee = await this.detectTokenFee(token1.address);
+      const hasFeeOnTransfer = token0HasFee || token1HasFee || 
+                              token0.symbol === 'SC' || token1.symbol === 'SC';
+
       const pairContract = new ethers.Contract(pairAddress, PAIR_ABI, this.signer);
-      const currentAllowance = await pairContract.allowance(this.userAddress, CONTRACTS.ROUTER);
       
-      if (currentAllowance < parsedLiquidity) {
-        const approveTx = await pairContract.approve(CONTRACTS.ROUTER, ethers.MaxUint256, { gasPrice });
-        await approveTx.wait();
+      // Check current allowance and approve if needed
+      try {
+        const currentAllowance = await pairContract.allowance(this.userAddress, CONTRACTS.ROUTER);
+        
+        if (currentAllowance < parsedLiquidity) {
+          const approveTx = await pairContract.approve(CONTRACTS.ROUTER, ethers.MaxUint256, { 
+            gasPrice,
+            gasLimit: 100000n // Conservative gas limit for approval
+          });
+          const approveReceipt = await approveTx.wait();
+          if (!approveReceipt.status) {
+            throw new Error('Failed to approve LP tokens');
+          }
+        }
+      } catch (approveError) {
+        console.error('Approval error:', approveError);
+        throw new Error('Failed to approve LP tokens for removal');
       }
 
       let tx;
@@ -1082,34 +1109,64 @@ export class Web3Service {
         const tokenMin = token0.symbol === 'CORE' ? parsedToken1Min : parsedToken0Min;
         const ethMin = token0.symbol === 'CORE' ? parsedToken0Min : parsedToken1Min;
 
-        // Estimate gas with proper error handling
-        let gasLimit;
-        try {
-          gasLimit = await routerWithSigner.estimateGas.removeLiquidityETH(
+        // Use different function for fee-on-transfer tokens
+        if (hasFeeOnTransfer) {
+          // For fee tokens, use supporting function and higher gas limit
+          let gasLimit;
+          try {
+            gasLimit = await routerWithSigner.estimateGas.removeLiquidityETHSupportingFeeOnTransferTokens(
+              token.address,
+              parsedLiquidity,
+              tokenMin,
+              ethMin,
+              this.userAddress,
+              deadline
+            );
+            gasLimit = gasLimit * 150n / 100n; // Add 50% buffer for fee tokens
+          } catch (error) {
+            console.warn('Gas estimation failed for fee token, using high fallback value:', error);
+            gasLimit = 800000n; // Higher fallback for fee tokens
+          }
+
+          tx = await routerWithSigner.removeLiquidityETHSupportingFeeOnTransferTokens(
             token.address,
             parsedLiquidity,
             tokenMin,
             ethMin,
             this.userAddress,
-            deadline
+            deadline,
+            { gasLimit, gasPrice }
           );
-          gasLimit = gasLimit * 130n / 100n; // Add 30% buffer
-        } catch (error) {
-          console.warn('Gas estimation failed, using fallback value:', error);
-          gasLimit = 500000n;
-        }
+        } else {
+          // Standard tokens
+          let gasLimit;
+          try {
+            gasLimit = await routerWithSigner.estimateGas.removeLiquidityETH(
+              token.address,
+              parsedLiquidity,
+              tokenMin,
+              ethMin,
+              this.userAddress,
+              deadline
+            );
+            gasLimit = gasLimit * 130n / 100n; // Add 30% buffer
+          } catch (error) {
+            console.warn('Gas estimation failed, using fallback value:', error);
+            gasLimit = 500000n;
+          }
 
-        tx = await routerWithSigner.removeLiquidityETH(
-          token.address,
-          parsedLiquidity,
-          tokenMin,
-          ethMin,
-          this.userAddress,
-          deadline,
-          { gasLimit, gasPrice }
-        );
+          tx = await routerWithSigner.removeLiquidityETH(
+            token.address,
+            parsedLiquidity,
+            tokenMin,
+            ethMin,
+            this.userAddress,
+            deadline,
+            { gasLimit, gasPrice }
+          );
+        }
       } else {
-        // Estimate gas with proper error handling
+        // Standard token-to-token liquidity removal
         let gasLimit;
         try {
           gasLimit = await routerWithSigner.estimateGas.removeLiquidity(
@@ -1121,10 +1178,10 @@ export class Web3Service {
             this.userAddress,
             deadline
           );
-          gasLimit = gasLimit * 130n / 100n; // Add 30% buffer
+          gasLimit = gasLimit * (hasFeeOnTransfer ? 150n : 130n) / 100n; // Higher buffer for fee tokens
         } catch (error) {
           console.warn('Gas estimation failed, using fallback value:', error);
-          gasLimit = 500000n;
+          gasLimit = hasFeeOnTransfer ? 800000n : 500000n; // Higher fallback for fee tokens
         }
 
         tx = await routerWithSigner.removeLiquidity(
@@ -1152,6 +1209,10 @@ export class Web3Service {
         throw new Error('Transaction was rejected by user');
       }
 
+      if (error.code === 'CALL_EXCEPTION' || error.message?.includes('transaction execution reverted')) {
+        throw new Error('Transaction failed. This may be due to price changes or insufficient liquidity. Please try again with higher slippage tolerance.');
+      }
+
       if (error.message?.includes('insufficient funds')) {
         throw new Error('Insufficient balance');
       }
@@ -1162,6 +1223,10 @@ export class Web3Service {
 
       if (error.message?.includes('EXPIRED')) {
         throw new Error('Transaction deadline expired. Try again.');
+      }
+
+      if (error.message?.includes('ds-math-sub-underflow')) {
+        throw new Error('Insufficient liquidity balance. Please check your LP token balance.');
       }
 
       if (error.message && typeof error.message === 'string') {
