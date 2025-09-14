@@ -284,9 +284,17 @@ export class Web3Service {
         throw new Error(`${walletType} is not installed`);
       }
 
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts'
+      // First check if already connected
+      let accounts = await window.ethereum.request({
+        method: 'eth_accounts'
       });
+
+      // If no accounts, request connection
+      if (!accounts || accounts.length === 0) {
+        accounts = await window.ethereum.request({
+          method: 'eth_requestAccounts'
+        });
+      }
 
       if (!accounts || accounts.length === 0) {
         throw new Error('No accounts found');

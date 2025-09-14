@@ -366,9 +366,12 @@ const Header: React.FC<HeaderProps> = ({
             {isConnected ? (
               <div className="flex items-center gap-1 sm:gap-1.5">
                 <div className="bg-gray-900/50 backdrop-blur-sm rounded-full px-1.5 sm:px-2 py-0.5 sm:py-1 border border-gray-800">
+                  <div className="flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-[10px] sm:text-xs font-medium text-white truncate max-w-[60px] sm:max-w-[100px]">
                     {`${address.substring(0, 4)}...${address.substring(address.length - 4)}`}
                   </span>
+                  </div>
                 </div>
                 <button
                   onClick={onDisconnect}
@@ -466,9 +469,12 @@ const Header: React.FC<HeaderProps> = ({
             {isConnected ? (
               <div className="flex items-center gap-1.5">
                 <div className="bg-gray-900/50 backdrop-blur-sm rounded-full px-3 py-1.5 border border-gray-800">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-sm font-medium text-white truncate max-w-[120px]">
                     {`${address.substring(0, 6)}...${address.substring(address.length - 4)}`}
                   </span>
+                  </div>
                 </div>
                 <button
                   onClick={onDisconnect}

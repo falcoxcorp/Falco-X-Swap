@@ -49,6 +49,7 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [web3Service] = useState(() => new Web3Service());
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     const hasAcceptedTerms = localStorage.getItem('falcox_terms_accepted');
@@ -57,6 +58,40 @@ function App() {
     }
   }, []);
 
+  // Auto-reconnect wallet on page load
+  useEffect(() => {
+    const autoReconnect = async () => {
+      try {
+        const savedWalletType = localStorage.getItem('falcox_connected_wallet');
+        const savedAddress = localStorage.getItem('falcox_wallet_address');
+        
+        if (savedWalletType && savedAddress && window.ethereum) {
+          // Check if the wallet is still connected
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          
+          if (accounts && accounts.length > 0 && accounts[0].toLowerCase() === savedAddress.toLowerCase()) {
+            // Wallet is still connected, restore the connection
+            const userAddress = await web3Service.connect(savedWalletType as 'metamask' | 'walletconnect' | 'okx' | 'ccwallet');
+            setIsConnected(true);
+            setAddress(userAddress.slice(0, 6) + '...' + userAddress.slice(-4));
+          } else {
+            // Wallet is no longer connected, clear saved data
+            localStorage.removeItem('falcox_connected_wallet');
+            localStorage.removeItem('falcox_wallet_address');
+          }
+        }
+      } catch (error) {
+        console.error('Auto-reconnect failed:', error);
+        // Clear saved data if auto-reconnect fails
+        localStorage.removeItem('falcox_connected_wallet');
+        localStorage.removeItem('falcox_wallet_address');
+      } finally {
+        setIsInitializing(false);
+      }
+    };
+
+    autoReconnect();
+  }, [web3Service]);
   const handleAcceptTerms = () => {
     localStorage.setItem('falcox_terms_accepted', 'true');
     setShowTerms(false);
@@ -67,6 +102,10 @@ function App() {
       const userAddress = await web3Service.connect(walletId as 'metamask' | 'walletconnect' | 'okx' | 'ccwallet');
       setIsConnected(true);
       setAddress(userAddress.slice(0, 6) + '...' + userAddress.slice(-4));
+      
+      // Save wallet connection info
+      localStorage.setItem('falcox_connected_wallet', walletId);
+      localStorage.setItem('falcox_wallet_address', userAddress);
     } catch (error) {
       console.error('Failed to connect wallet:', error);
       throw error;
@@ -77,6 +116,10 @@ function App() {
     web3Service.disconnect();
     setIsConnected(false);
     setAddress('');
+    
+    // Clear saved wallet connection info
+    localStorage.removeItem('falcox_connected_wallet');
+    localStorage.removeItem('falcox_wallet_address');
   };
 
   const menuItems = [
