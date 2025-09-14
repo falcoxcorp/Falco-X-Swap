@@ -20,7 +20,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose, onSelectWall
     {
       id: 'safepal',
       name: 'SafePal Wallet',
-      icon: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/sfp.png',
+      icon: 'https://photos.pinksale.finance/file/pinksale-logo-upload/1757813701701-45e9c01e57ccd6de5930b3c4155890c8.png',
       category: 'Recent'
     },
     {
@@ -32,7 +32,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose, onSelectWall
     {
       id: 'bitget',
       name: 'Bitget Wallet',
-      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/bitkeep.png',
+      icon: 'https://photos.pinksale.finance/file/pinksale-logo-upload/1757813739083-a7f756f71ca5629b3a7f61beea3210c1.png',
       category: 'Recent'
     },
     {
