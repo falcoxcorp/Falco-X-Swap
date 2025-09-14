@@ -907,9 +907,100 @@ export class Web3Service {
     }
   }
 
+  // Detectar fee específico de un token mediante simulación
+  async detectTokenTransferFee(tokenAddress: string): Promise<number> {
+    if (!this.provider || !this.signer) return 0;
+    
+    try {
+      // Tokens conocidos con fees
+      const knownTokenFees: { [address: string]: number } = {
+        '0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE': 5.0, // SC - Strat Core
+        // Agregar más tokens con fees conocidos aquí
+      };
+      
+      const normalizedAddress = tokenAddress.toLowerCase();
+      if (knownTokenFees[normalizedAddress]) {
+        return knownTokenFees[normalizedAddress];
+      }
+      
+      // Para tokens desconocidos, intentar detectar mediante simulación
+      const contract = new ethers.Contract(tokenAddress, [
+        'function transfer(address to, uint256 amount) returns (bool)',
+        'function balanceOf(address account) view returns (uint256)',
+        'function decimals() view returns (uint8)'
+      ], this.provider);
+      
+      const userAddress = await this.signer.getAddress();
+      const balance = await contract.balanceOf(userAddress);
+      
+      if (balance === 0n) return 0; // No balance to test
+      
+      // Simular transferencia pequeña para detectar fee
+      const testAmount = balance / 1000n; // 0.1% del balance
+      if (testAmount === 0n) return 0;
+      
+      try {
+        // Simular transferencia (no ejecutar)
+        await contract.transfer.staticCall(userAddress, testAmount);
+        return 0; // No fee detectado
+      } catch (error: any) {
+        // Si falla, podría tener fee - asumir fee conservador
+        console.log(`Possible fee detected for token ${tokenAddress}:`, error.message);
+        return 2.0; // Fee conservador del 2%
+      }
+    } catch (error) {
+      console.error('Error detecting token fee:', error);
+      return 0; // En caso de error, asumir sin fee
+    }
+  }
+
+  // Obtener fee del router FalcoX
   async getRouterFee(): Promise<number> {
-    // Fee del router FalcoX: 0.30% (0.003)
-    return 0.003;
+    // Fee fijo del router FalcoX
+    return 0.30; // 0.30%
+  }
+
+  // Calcular costos totales de transacción
+  async calculateTotalTransactionCost(
+    fromToken: Token,
+    toToken: Token,
+    amountIn: string
+  ): Promise<{
+    routerFee: number;
+    fromTokenFee: number;
+    toTokenFee: number;
+    totalFeePercentage: number;
+    estimatedLoss: string;
+  }> {
+    try {
+      const routerFee = await this.getRouterFee();
+      const fromTokenFee = fromToken.address !== ethers.ZeroAddress 
+        ? await this.detectTokenTransferFee(fromToken.address) 
+        : 0;
+      const toTokenFee = toToken.address !== ethers.ZeroAddress 
+        ? await this.detectTokenTransferFee(toToken.address) 
+        : 0;
+      
+      const totalFeePercentage = routerFee + fromTokenFee + toTokenFee;
+      const estimatedLoss = (parseFloat(amountIn) * totalFeePercentage / 100).toFixed(6);
+      
+      return {
+        routerFee,
+        fromTokenFee,
+        toTokenFee,
+        totalFeePercentage,
+        estimatedLoss
+      };
+    } catch (error) {
+      console.error('Error calculating transaction costs:', error);
+      return {
+        routerFee: 0.30,
+        fromTokenFee: 0,
+        toTokenFee: 0,
+        totalFeePercentage: 0.30,
+        estimatedLoss: '0'
+      };
+    }
   }
 
   async getTokenTransferFee(tokenAddress: string): Promise<number> {
@@ -938,52 +1029,6 @@ export class Web3Service {
     } catch (error) {
       console.error(`Error getting token transfer fee for ${tokenAddress}:`, error);
       return 0;
-    }
-  }
-
-  async calculateTotalTransactionCost(
-    fromToken: Token,
-    toToken: Token,
-    amountIn: string
-  ): Promise<{
-    routerFee: number;
-    fromTokenFee: number;
-    toTokenFee: number;
-    totalFeePercentage: number;
-    estimatedLoss: string;
-  }> {
-    try {
-      const routerFee = await this.getRouterFee();
-      const fromTokenFee = await this.getTokenTransferFee(fromToken.address);
-      const toTokenFee = await this.getTokenTransferFee(toToken.address);
-      
-      const totalFeePercentage = routerFee + fromTokenFee + toTokenFee;
-      const estimatedLoss = (parseFloat(amountIn) * totalFeePercentage).toFixed(6);
-
-      console.log('Transaction cost breakdown:', {
-        routerFee: `${(routerFee * 100).toFixed(2)}%`,
-        fromTokenFee: `${(fromTokenFee * 100).toFixed(2)}%`,
-        toTokenFee: `${(toTokenFee * 100).toFixed(2)}%`,
-        totalFeePercentage: `${(totalFeePercentage * 100).toFixed(2)}%`,
-        estimatedLoss: `${estimatedLoss} ${fromToken.symbol}`
-      });
-
-      return {
-        routerFee,
-        fromTokenFee,
-        toTokenFee,
-        totalFeePercentage,
-        estimatedLoss
-      };
-    } catch (error) {
-      console.error('Error calculating transaction cost:', error);
-      return {
-        routerFee: 0.003,
-        fromTokenFee: 0,
-        toTokenFee: 0,
-        totalFeePercentage: 0.003,
-        estimatedLoss: '0'
-      };
     }
   }
 
