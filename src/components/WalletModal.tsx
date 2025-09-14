@@ -52,30 +52,6 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose, onSelectWall
       name: 'Coinbase Wallet',
       icon: 'https://photos.pinksale.finance/file/pinksale-logo-upload/1757814618129-636723b9234071ff64e5b9549ba84876.png',
       category: 'Recent'
-    },
-    {
-      id: 'ledger',
-      name: 'Ledger',
-      icon: 'https://raw.githubusercontent.com/LedgerHQ/ledger-assets/master/logos/ledger-logo-long-blue.svg',
-      category: 'Hardware'
-    },
-    {
-      id: 'browser',
-      name: 'Browser Wallet',
-      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/generic.png',
-      category: 'Other'
-    },
-    {
-      id: 'okx',
-      name: 'OKX Wallet',
-      icon: 'https://photos.pinksale.finance/file/pinksale-logo-upload/1757814504078-ab24aa4fccb165dc3ea539fa6f40d2c9.png',
-      category: 'Recent'
-    },
-    {
-      id: 'ccwallet',
-      name: 'CC Wallet',
-      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/generic.png',
-      category: 'Recent'
     }
   ];
 
