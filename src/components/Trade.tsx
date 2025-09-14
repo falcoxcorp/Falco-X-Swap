@@ -477,7 +477,11 @@ const Trade: React.FC<TradeProps> = ({ web3Service, isConnected, onConnect }) =>
                     <span className="text-white">{slippage}%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Network fee:</span>
+                    <span className="text-gray-400">Router fee (FalcoX):</span>
+                    <span className="text-white">0.30%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Estimated gas:</span>
                     <span className="text-white">~0.008-0.015 CORE</span>
                   </div>
                 </div>

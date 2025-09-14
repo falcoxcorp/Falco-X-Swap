@@ -700,7 +700,11 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit, value: parsedAmountIn }
+              { 
+                gasLimit, 
+                value: parsedAmountIn,
+                gasPrice: gasPrice || undefined
+              }
             );
           } else {
             const gasLimit = await estimateGas(
@@ -713,7 +717,11 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit, value: parsedAmountIn }
+              { 
+                gasLimit, 
+                value: parsedAmountIn,
+                gasPrice: gasPrice || undefined
+              }
             );
           }
         } else if (toToken.symbol === 'CORE') {
@@ -728,7 +736,10 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit }
+              { 
+                gasLimit,
+                gasPrice: gasPrice || undefined
+              }
             );
           } else {
             const gasLimit = await estimateGas(
@@ -741,7 +752,10 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit }
+              { 
+                gasLimit,
+                gasPrice: gasPrice || undefined
+              }
             );
           }
         } else {
@@ -756,7 +770,10 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit }
+              { 
+                gasLimit,
+                gasPrice: gasPrice || undefined
+              }
             );
           } else {
             const gasLimit = await estimateGas(
@@ -769,7 +786,10 @@ export class Web3Service {
               path,
               address,
               deadline,
-              { gasLimit }
+              { 
+                gasLimit,
+                gasPrice: gasPrice || undefined
+              }
             );
           }
         }
