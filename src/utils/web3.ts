@@ -818,59 +818,6 @@ export class Web3Service {
     }
   }
 
-  // Función para detectar si un token tiene fees/tax
-  private async detectTokenFee(tokenAddress: string): Promise<boolean> {
-    if (!this.provider || tokenAddress === ethers.ZeroAddress) {
-      return false;
-    }
-    
-    // Lista de tokens conocidos con fees
-    const KNOWN_FEE_TOKENS = [
-      '0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE', // Strat Core (SC)
-    ];
-    
-    if (KNOWN_FEE_TOKENS.includes(tokenAddress.toLowerCase())) {
-      return true;
-    }
-
-    try {
-      // Intentar detectar si el token tiene funciones relacionadas con tax
-      const contract = new ethers.Contract(tokenAddress, TOKEN_TAX_DETECTOR_ABI, this.provider);
-      
-      // Verificar si tiene función taxStatus
-      try {
-        const taxStatus = await contract.taxStatus();
-        return typeof taxStatus === 'boolean' && taxStatus;
-      } catch {
-        // Si no tiene taxStatus, intentar otras verificaciones
-      }
-      
-      // Verificar si tiene función isExcluded (indicativo de token con tax)
-      try {
-        await contract.isExcluded(ethers.ZeroAddress);
-        return true; // Si la función existe, probablemente tiene tax
-      } catch {
-        // Si no tiene isExcluded, continuar
-      }
-      
-      // Verificar si tiene owner (muchos tokens con tax son Ownable)
-      try {
-        const owner = await contract.owner();
-        if (owner && owner !== ethers.ZeroAddress) {
-          // Si tiene owner, es probable que tenga funciones de tax
-          return true;
-        }
-      } catch {
-        // Si no tiene owner, continuar
-      }
-      
-      return false;
-    } catch (error) {
-      // Si hay error al verificar, asumir que puede tener fee por seguridad
-      console.warn('Could not detect token fee status, assuming fee token for safety:', error);
-      return true;
-    }
-  }
 
   async addLiquidity(
     token0Amount: string,
