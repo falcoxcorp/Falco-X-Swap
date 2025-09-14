@@ -43,8 +43,8 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
   const [token0Amount, setToken0Amount] = useState('0');
   const [token1Amount, setToken1Amount] = useState('0');
 
-  // Use reasonable slippage for remove liquidity
-  const AUTO_SLIPPAGE = '0.5';
+  // Increase slippage to 20% for better tolerance
+  const AUTO_SLIPPAGE = '20.0';
 
   useEffect(() => {
     // Calculate token amounts based on percentage
