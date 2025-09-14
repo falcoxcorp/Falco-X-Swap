@@ -1,0 +1,77 @@
+{
+    "title": "Terms of Use and Service Conditions for Falco-X",
+    "sections": [
+      {
+        "title": "1. Acceptance of Terms",
+        "content": "By accessing or using the Falco-X platform (\"the Platform\"), you agree to comply with and be bound by these Terms of Use and Service Conditions (\"Terms\"). If you do not agree with these Terms, we ask that you do not use the Platform."
+      },
+      {
+        "title": "2. Service Description",
+        "content": "Falco-X offers an ecosystem of services including:\n\n- Digital asset trading\n- Token creation\n- Staking pool creation and staking management\n- Launchpad and Fairlaunch services\n- Trading bots (Grid Bot, Reverse Grid Bot, Infinity Grid Bot, Smart Trade, Stop Limit, Buy/Sell, Rebalancing, Market-to-Market)\n- P2P Marketplace\n- Copy Trade service\n- Integrated games\n- Online store (Falco-X Online Store)\n- Cryptocurrency farming\n- Multisender tool\n- Audits, KYC verification and market visualization services (Dexview)\n\nBy using any of these services, you accept these Terms."
+      },
+      {
+        "title": "3. Eligibility",
+        "content": "You must be at least 18 years old and have the legal capacity to accept these Terms and use Falco-X's services."
+      },
+      {
+        "title": "4. User Responsibilities",
+        "content": "- Maintain the confidentiality of your access credentials.\n- Ensure that all activity through your account complies with the law.\n- Assume full responsibility for the use of any tool or service provided by Falco-X."
+      },
+      {
+        "title": "5. Associated Risks",
+        "content": "Falco-X provides financial tools that carry significant risks, including partial or total loss of your capital.\nYou acknowledge that you participate in trading, staking, farming and any other activity at your own risk and responsibility."
+      },
+      {
+        "title": "6. Automated Services (Bots)",
+        "content": "- Bots operate according to user-defined settings.\n- Falco-X does not guarantee returns or assume responsibility for the automated decisions of bots.\n- Continuous evaluation of configured bots' performance is recommended."
+      },
+      {
+        "title": "7. Launchpad, Fairlaunch, Token Creation and Staking",
+        "content": "- Token creation, participation in launchpads, staking pools and other services are performed under your full responsibility.\n- You guarantee that your project or token complies with all applicable legal regulations in your jurisdiction."
+      },
+      {
+        "title": "8. P2P Market and Copy Trade",
+        "content": "- Falco-X acts solely as a technological intermediary and does not intervene in disputes between users.\n- In Copy Trade, you understand that replicating other users' trades may result in losses."
+      },
+      {
+        "title": "9. Games and Falco-X Online Store",
+        "content": "- Access to games and the online store is optional.\n- Falco-X is not responsible for the availability, quality or delivery of products or rewards offered."
+      },
+      {
+        "title": "10. Farming and Multisender",
+        "content": "- The use of farming and multisender may involve network fees and technical risks.\n- It is the user's responsibility to verify the accuracy of data and transactions."
+      },
+      {
+        "title": "11. Intellectual Property",
+        "content": "All content, trademarks, names, logos, interfaces, source code and designs of Falco-X are the exclusive property of the platform.\nTheir use without prior and express authorization is prohibited."
+      },
+      {
+        "title": "12. Privacy Policy and KYC",
+        "content": "All information provided through the KYC verification process will be treated in accordance with our Privacy Policy.\nWe are committed to protecting your data, except when required by authorities in accordance with the law."
+      },
+      {
+        "title": "13. Limitation of Liability",
+        "content": "In no event shall Falco-X, its directors, employees or agents be liable for indirect, incidental, special, punitive or consequential damages related to the use of the Platform."
+      },
+      {
+        "title": "14. Indemnification",
+        "content": "You agree to indemnify and hold Falco-X harmless from any claim, damage, loss or expense, including legal fees, arising from your use of the Platform or your breach of these Terms."
+      },
+      {
+        "title": "15. Service Termination",
+        "content": "Falco-X reserves the right to suspend, restrict or cancel your access to the Platform at any time, at its sole discretion and without prior notice."
+      },
+      {
+        "title": "16. Modifications",
+        "content": "We may modify these Terms at any time. We will publish the modifications on the Platform and continued use of the services will imply your acceptance of them."
+      },
+      {
+        "title": "17. Governing Law and Jurisdiction",
+        "content": "These Terms are governed by the laws of [Jurisdiction].\nAny dispute related to the use of Falco-X shall be resolved exclusively in the courts of [City, Country]."
+      },
+      {
+        "title": "Disclaimer",
+        "content": "Cryptocurrency trading and participation in blockchain projects involve significant risks, including total loss of invested capital.\nFalco-X is not a financial advisor nor does it promote specific investments.\nAll investment decisions are the sole responsibility of the user.\nWe recommend consulting an independent financial advisor before participating in any activity offered on our platform."
+      }
+    ]
+  }

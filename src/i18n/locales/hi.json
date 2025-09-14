@@ -1,0 +1,80 @@
+{
+  "common": {
+    "connect_wallet": "वॉलेट कनेक्ट करें",
+    "disconnect": "डिस्कनेक्ट",
+    "processing": "प्रोसेसिंग...",
+    "enter_amount": "राशि दर्ज करें",
+    "select_token": "टोकन चुनें",
+    "balance": "बैलेंस",
+    "available_balance": "उपलब्ध बैलेंस",
+    "max": "अधिकतम",
+    "swap": "स्वैप",
+    "from": "से",
+    "to": "तक",
+    "settings": "सेटिंग्स",
+    "slippage_tolerance": "स्लिपेज टॉलरेंस",
+    "transaction_deadline": "लेन-देन की समय सीमा",
+    "minutes": "मिनट",
+    "expert_mode": "एक्सपर्ट मोड",
+    "coming_soon": "जल्द आ रहा है",
+    "trend": "ट्रेंड",
+    "see_all": "सभी देखें"
+  },
+  "trade": {
+    "tabs": {
+      "swap": "स्वैप",
+      "liquidity": "लिक्विडिटी",
+      "cross_swap": "क्रॉस स्वैप",
+      "bridge": "ब्रिज"
+    },
+    "exchange": "एक्सचेंज",
+    "description": "तुरंत टोकन का आदान-प्रदान करें",
+    "market": "मार्केट",
+    "limit": "लिमिट",
+    "price": "कीमत",
+    "amount": "राशि",
+    "total": "कुल",
+    "buy_token": "{{token}} खरीदें",
+    "settings": "सेटिंग्स",
+    "history": "इतिहास",
+    "select_token": "टोकन चुनें",
+    "enter_amount": "राशि दर्ज करें",
+    "insufficient_balance": "अपर्याप्त बैलेंस",
+    "price_impact": "कीमत प्रभाव",
+    "minimum_received": "न्यूनतम प्राप्त",
+    "maximum_sold": "अधिकतम बिक्री",
+    "route": "मार्ग"
+  },
+  "menu": {
+    "trade": "ट्रेड",
+    "p2p_market": "पीयर-टू-पीयर मार्केट",
+    "copy_trade": "कॉपी ट्रेड",
+    "games": "गेम्स",
+    "airdrop": "एयरड्रॉप",
+    "trading_bot": "ट्रेडिंग बॉट",
+    "bots": {
+      "grid": "ग्रिड बॉट",
+      "reverse_grid": "रिवर्स ग्रिड बॉट",
+      "infinity_grid": "इन्फिनिटी ग्रिड बॉट",
+      "smart_trade": "स्मार्ट ट्रेड",
+      "stop_limit": "स्टॉप लिमिट",
+      "buy_sell": "खरीद और बिक्री",
+      "rebalancing": "रीबैलेंसिंग बॉट",
+      "market_to_market": "मार्केट टू मार्केट बॉट"
+    },
+    "staking": {
+      "title": "स्टेकिंग",
+      "pools": "स्टेकिंग पूल्स",
+      "create": "स्टेकिंग बनाएं",
+      "admin": "स्टेकिंग एडमिन"
+    },
+    "farming": "फार्मिंग",
+    "nft_staking": "एनएफटी स्टेकिंग",
+    "multisender": "मल्टीसेंडर",
+    "partnership": "पार्टनरशिप",
+    "dexview": "डेक्स व्यू",
+    "audit": "ऑडिट",
+    "kyc": "केवाईसी",
+    "docs": "डॉक्स"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "common": {
+    "connect_wallet": "Connecter le portefeuille",
+    "disconnect": "Déconnecter",
+    "processing": "Traitement...",
+    "enter_amount": "Entrer un montant",
+    "select_token": "Sélectionner un jeton",
+    "balance": "Solde",
+    "available_balance": "Solde disponible",
+    "max": "MAX",
+    "swap": "Échanger",
+    "from": "De",
+    "to": "À",
+    "settings": "Paramètres",
+    "slippage_tolerance": "Tolérance au glissement",
+    "transaction_deadline": "Date limite de transaction",
+    "minutes": "Minutes",
+    "expert_mode": "Mode Expert",
+    "coming_soon": "Bientôt disponible",
+    "trend": "Tendance",
+    "see_all": "Voir tout"
+  },
+  "menu": {
+    "trade": "Échanger",
+    "p2p_market": "Marché P2P",
+    "copy_trade": "Copier le trading",
+    "games": "Jeux",
+    "airdrop": "Airdrop",
+    "trading_bot": "Bot de trading",
+    "bots": {
+      "grid": "Bot de grille",
+      "reverse_grid": "Bot de grille inversée",
+      "infinity_grid": "Bot de grille infinie",
+      "smart_trade": "Trading intelligent",
+      "stop_limit": "Stop Limit",
+      "buy_sell": "Achat et vente",
+      "rebalancing": "Bot de rééquilibrage",
+      "market_to_market": "Bot de marché à marché"
+    },
+    "staking": {
+      "title": "Staking",
+      "pools": "Pools de staking",
+      "create": "Créer un staking",
+      "admin": "Admin staking"
+    },
+    "farming": "Farming",
+    "nft_staking": "Staking NFT",
+    "multisender": "Multi-envoi",
+    "partnership": "Partenariat",
+    "dexview": "Vue DEX",
+    "audit": "Audit",
+    "kyc": "KYC",
+    "docs": "Documentation"
+  }
+}

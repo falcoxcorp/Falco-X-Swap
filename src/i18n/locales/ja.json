@@ -1,0 +1,48 @@
+{
+  "common": {
+    "connect_wallet": "ウォレットを接続",
+    "disconnect": "切断",
+    "processing": "処理中...",
+    "enter_amount": "金額を入力",
+    "select_token": "トークンを選択",
+    "balance": "残高",
+    "available_balance": "利用可能残高",
+    "max": "最大",
+    "swap": "スワップ",
+    "from": "から",
+    "to": "へ",
+    "settings": "設定",
+    "slippage_tolerance": "スリッページ許容度",
+    "transaction_deadline": "取引期限",
+    "minutes": "分",
+    "expert_mode": "エキスパートモード",
+    "coming_soon": "近日公開",
+    "trend": "トレンド",
+    "see_all": "すべて表示"
+  },
+  "trade": {
+    "tabs": {
+      "swap": "スワップ",
+      "liquidity": "流動性",
+      "cross_swap": "クロススワップ",
+      "bridge": "ブリッジ"
+    },
+    "exchange": "取引所",
+    "description": "即時トークン取引",
+    "market": "成行注文",
+    "limit": "指値注文",
+    "price": "価格",
+    "amount": "数量",
+    "total": "合計",
+    "buy_token": "{{token}}を購入",
+    "settings": "設定",
+    "history": "履歴",
+    "select_token": "トークンを選択",
+    "enter_amount": "数量を入力",
+    "insufficient_balance": "残高不足",
+    "price_impact": "価格への影響",
+    "minimum_received": "最小受取額",
+    "maximum_sold": "最大売却額",
+    "route": "ルート"
+  }
+}

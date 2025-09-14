@@ -1,0 +1,94 @@
+{
+  "common": {
+    "connect_wallet": "连接钱包",
+    "disconnect": "断开连接",
+    "processing": "处理中...",
+    "enter_amount": "输入金额",
+    "select_token": "选择代币",
+    "balance": "余额",
+    "available_balance": "可用余额",
+    "max": "最大",
+    "swap": "兑换",
+    "from": "从",
+    "to": "到",
+    "settings": "设置",
+    "slippage_tolerance": "滑点容差",
+    "transaction_deadline": "交易截止时间",
+    "minutes": "分钟",
+    "expert_mode": "专家模式",
+    "coming_soon": "即将推出",
+    "trend": "趋势",
+    "see_all": "查看全部"
+  },
+  "menu": {
+    "trade": "交易",
+    "p2p_market": "P2P市场",
+    "copy_trade": "跟单交易",
+    "games": "游戏",
+    "airdrop": "空投",
+    "trading_bot": "交易机器人",
+    "create_tokens": {
+      "title": "创建代币",
+      "standard": "标准代币",
+      "liquidity_generator": "流动性生成代币",
+      "baby": "Baby代币",
+      "buyback_baby": "回购Baby代币",
+      "advanced": "高级代币"
+    },
+    "staking": {
+      "title": "质押",
+      "pools": "质押池",
+      "create": "创建质押",
+      "admin": "质押管理"
+    },
+    "launchpad": {
+      "title": "发射台",
+      "create": "创建发射台",
+      "create_fairlaunch": "创建公平发射",
+      "list": "发射台列表"
+    },
+    "bots": {
+      "grid": "网格机器人",
+      "reverse_grid": "反向网格机器人",
+      "infinity_grid": "无限网格机器人",
+      "smart_trade": "智能交易",
+      "stop_limit": "止损限价",
+      "buy_sell": "买卖交易",
+      "rebalancing": "再平衡机器人",
+      "market_to_market": "市场对市场机器人"
+    },
+    "farming": "挖矿",
+    "nft_staking": "NFT质押",
+    "multisender": "批量发送",
+    "partnership": "合作伙伴",
+    "dexview": "DEX视图",
+    "audit": "审计",
+    "kyc": "KYC认证",
+    "docs": "文档"
+  },
+  "trade": {
+    "tabs": {
+      "swap": "兑换",
+      "liquidity": "流动性",
+      "cross_swap": "跨链兑换",
+      "bridge": "跨链桥"
+    },
+    "exchange": "交易所",
+    "description": "即时交易代币",
+    "market": "市价",
+    "limit": "限价",
+    "price": "价格",
+    "amount": "数量",
+    "total": "总计",
+    "buy_token": "购买 {{token}}",
+    "settings": "设置",
+    "history": "历史记录",
+    "select_token": "选择代币",
+    "enter_amount": "输入数量",
+    "insufficient_balance": "余额不足",
+    "price_impact": "价格影响",
+    "minimum_received": "最少收到",
+    "maximum_sold": "最多卖出",
+    "route": "路径"
+  }
+}

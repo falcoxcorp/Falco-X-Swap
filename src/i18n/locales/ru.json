@@ -1,0 +1,80 @@
+{
+  "common": {
+    "connect_wallet": "Подключить кошелек",
+    "disconnect": "Отключить",
+    "processing": "Обработка...",
+    "enter_amount": "Введите сумму",
+    "select_token": "Выберите токен",
+    "balance": "Баланс",
+    "available_balance": "Доступный баланс",
+    "max": "МАКС",
+    "swap": "Обмен",
+    "from": "Из",
+    "to": "В",
+    "settings": "Настройки",
+    "slippage_tolerance": "Допустимое проскальзывание",
+    "transaction_deadline": "Срок транзакции",
+    "minutes": "Минут",
+    "expert_mode": "Экспертный режим",
+    "coming_soon": "Скоро",
+    "trend": "Тренд",
+    "see_all": "Показать все"
+  },
+  "trade": {
+    "tabs": {
+      "swap": "Обмен",
+      "liquidity": "Ликвидность",
+      "cross_swap": "Кросс-обмен",
+      "bridge": "Мост"
+    },
+    "exchange": "Биржа",
+    "description": "Мгновенный обмен токенов",
+    "market": "Рыночный",
+    "limit": "Лимитный",
+    "price": "Цена",
+    "amount": "Количество",
+    "total": "Итого",
+    "buy_token": "Купить {{token}}",
+    "settings": "Настройки",
+    "history": "История",
+    "select_token": "Выбрать токен",
+    "enter_amount": "Введите количество",
+    "insufficient_balance": "Недостаточный баланс",
+    "price_impact": "Влияние на цену",
+    "minimum_received": "Минимум к получению",
+    "maximum_sold": "Максимум к продаже",
+    "route": "Маршрут"
+  },
+  "menu": {
+    "trade": "Торговля",
+    "p2p_market": "P2P Рынок",
+    "copy_trade": "Копитрейдинг",
+    "games": "Игры",
+    "airdrop": "Airdrop",
+    "trading_bot": "Торговый бот",
+    "bots": {
+      "grid": "Сеточный бот",
+      "reverse_grid": "Обратный сеточный бот",
+      "infinity_grid": "Бесконечный сеточный бот",
+      "smart_trade": "Умная торговля",
+      "stop_limit": "Стоп-лимит",
+      "buy_sell": "Покупка и продажа",
+      "rebalancing": "Ребалансирующий бот",
+      "market_to_market": "Межрыночный бот"
+    },
+    "staking": {
+      "title": "Стейкинг",
+      "pools": "Пулы стейкинга",
+      "create": "Создать стейкинг",
+      "admin": "Управление стейкингом"
+    },
+    "farming": "Фарминг",
+    "nft_staking": "NFT Стейкинг",
+    "multisender": "Мультиотправка",
+    "partnership": "Партнерство",
+    "dexview": "DEX обзор",
+    "audit": "Аудит",
+    "kyc": "KYC",
+    "docs": "Документация"
+  }
+}

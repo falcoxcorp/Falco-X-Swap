@@ -1,0 +1,48 @@
+{
+  "common": {
+    "connect_wallet": "Conectar Carteira",
+    "disconnect": "Desconectar",
+    "processing": "Processando...",
+    "enter_amount": "Digite o valor",
+    "select_token": "Selecionar token",
+    "balance": "Saldo",
+    "available_balance": "Saldo disponível",
+    "max": "MAX",
+    "swap": "Trocar",
+    "from": "De",
+    "to": "Para",
+    "settings": "Configurações",
+    "slippage_tolerance": "Tolerância de slippage",
+    "transaction_deadline": "Prazo da transação",
+    "minutes": "Minutos",
+    "expert_mode": "Modo Expert",
+    "coming_soon": "Em breve",
+    "trend": "Tendência",
+    "see_all": "Ver Todos"
+  },
+  "trade": {
+    "tabs": {
+      "swap": "Trocar",
+      "liquidity": "Liquidez",
+      "cross_swap": "Cross Swap",
+      "bridge": "Ponte"
+    },
+    "exchange": "Exchange",
+    "description": "Troque tokens instantaneamente",
+    "market": "Mercado",
+    "limit": "Limite",
+    "price": "Preço",
+    "amount": "Quantidade",
+    "total": "Total",
+    "buy_token": "Comprar {{token}}",
+    "settings": "Configurações",
+    "history": "Histórico",
+    "select_token": "Selecionar token",
+    "enter_amount": "Digite a quantidade",
+    "insufficient_balance": "Saldo insuficiente",
+    "price_impact": "Impacto no preço",
+    "minimum_received": "Mínimo recebido",
+    "maximum_sold": "Máximo vendido",
+    "route": "Rota"
+  }
+}

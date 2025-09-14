@@ -1,0 +1,48 @@
+{
+  "common": {
+    "connect_wallet": "Conectar Billetera",
+    "disconnect": "Desconectar",
+    "processing": "Procesando...",
+    "enter_amount": "Ingrese un monto",
+    "select_token": "Seleccionar token",
+    "balance": "Balance",
+    "available_balance": "Balance disponible",
+    "max": "MAX",
+    "swap": "Intercambiar",
+    "from": "Desde",
+    "to": "Hasta",
+    "settings": "Configuración",
+    "slippage_tolerance": "Tolerancia al deslizamiento",
+    "transaction_deadline": "Plazo de transacción",
+    "minutes": "Minutos",
+    "expert_mode": "Modo Experto",
+    "coming_soon": "Próximamente",
+    "trend": "Tendencia",
+    "see_all": "VER TODO"
+  },
+  "trade": {
+    "tabs": {
+      "swap": "Intercambiar",
+      "liquidity": "Liquidez",
+      "cross_swap": "Intercambio Cruzado",
+      "bridge": "Puente"
+    },
+    "exchange": "Intercambio",
+    "description": "Intercambia tokens al instante",
+    "market": "Mercado",
+    "limit": "Límite",
+    "price": "Precio",
+    "amount": "Cantidad",
+    "total": "Total",
+    "buy_token": "Comprar {{token}}",
+    "settings": "Configuración",
+    "history": "Historial",
+    "select_token": "Seleccionar token",
+    "enter_amount": "Ingrese monto",
+    "insufficient_balance": "Balance insuficiente",
+    "price_impact": "Impacto en el precio",
+    "minimum_received": "Mínimo recibido",
+    "maximum_sold": "Máximo vendido",
+    "route": "Ruta"
+  }
+}

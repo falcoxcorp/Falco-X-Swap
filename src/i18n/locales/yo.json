@@ -1,0 +1,80 @@
+{
+  "common": {
+    "connect_wallet": "So Apamọwọ",
+    "disconnect": "Yọkuro",
+    "processing": "Ṣiṣẹ...",
+    "enter_amount": "Tẹ iye sii",
+    "select_token": "Yan token",
+    "balance": "Iwo",
+    "available_balance": "Iwo ti o wa",
+    "max": "PIPE",
+    "swap": "Paarọ",
+    "from": "Lati",
+    "to": "Si",
+    "settings": "Eto",
+    "slippage_tolerance": "Gba slippage",
+    "transaction_deadline": "Akoko ipari iṣowo",
+    "minutes": "Iṣẹju",
+    "expert_mode": "Ipo Aṣa",
+    "coming_soon": "N bọ laipẹ",
+    "trend": "Ipo",
+    "see_all": "Wo Gbogbo"
+  },
+  "trade": {
+    "tabs": {
+      "swap": "Paarọ",
+      "liquidity": "Omi",
+      "cross_swap": "Paarọ Kọja",
+      "bridge": "Afara"
+    },
+    "exchange": "Paarọ",
+    "description": "Paarọ awọn token ni kiakia",
+    "market": "Ọja",
+    "limit": "Opin",
+    "price": "Iye owo",
+    "amount": "Iye",
+    "total": "Lapapọ",
+    "buy_token": "Ra {{token}}",
+    "settings": "Eto",
+    "history": "Itan",
+    "select_token": "Yan token",
+    "enter_amount": "Tẹ iye sii",
+    "insufficient_balance": "Iwo ko to",
+    "price_impact": "Ipa owo",
+    "minimum_received": "Kere julọ ti a gba",
+    "maximum_sold": "Pupọ julọ ti a ta",
+    "route": "Ọna"
+  },
+  "menu": {
+    "trade": "Iṣowo",
+    "p2p_market": "Ọja P2P",
+    "copy_trade": "Da Iṣowo kọ",
+    "games": "Ere",
+    "airdrop": "Airdrop",
+    "trading_bot": "Bot Iṣowo",
+    "bots": {
+      "grid": "Bot Grid",
+      "reverse_grid": "Bot Grid Yiyipada",
+      "infinity_grid": "Bot Grid Ailopin",
+      "smart_trade": "Iṣowo Ọgbọn",
+      "stop_limit": "Iduro Opin",
+      "buy_sell": "Ra ati Ta",
+      "rebalancing": "Bot Atunṣeto",
+      "market_to_market": "Bot Ọja si Ọja"
+    },
+    "staking": {
+      "title": "Staking",
+      "pools": "Awọn Pool Staking",
+      "create": "Ṣẹda Staking",
+      "admin": "Alakoso Staking"
+    },
+    "farming": "Farming",
+    "nft_staking": "NFT Staking",
+    "multisender": "Multisender",
+    "partnership": "Ajọṣepọ",
+    "dexview": "Wiwo DEX",
+    "audit": "Ayẹwo",
+    "kyc": "KYC",
+    "docs": "Iwe"
+  }
+}

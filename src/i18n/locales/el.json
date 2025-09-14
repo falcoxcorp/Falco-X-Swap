@@ -1,0 +1,80 @@
+{
+  "common": {
+    "connect_wallet": "Σύνδεση Πορτοφολιού",
+    "disconnect": "Αποσύνδεση",
+    "processing": "Επεξεργασία...",
+    "enter_amount": "Εισάγετε ποσό",
+    "select_token": "Επιλέξτε token",
+    "balance": "Υπόλοιπο",
+    "available_balance": "Διαθέσιμο υπόλοιπο",
+    "max": "ΜΕΓΙΣΤΟ",
+    "swap": "Ανταλλαγή",
+    "from": "Από",
+    "to": "Προς",
+    "settings": "Ρυθμίσεις",
+    "slippage_tolerance": "Ανοχή ολίσθησης",
+    "transaction_deadline": "Προθεσμία συναλλαγής",
+    "minutes": "Λεπτά",
+    "expert_mode": "Λειτουργία για προχωρημένους",
+    "coming_soon": "Έρχεται σύντομα",
+    "trend": "Τάση",
+    "see_all": "Προβολή όλων"
+  },
+  "trade": {
+    "tabs": {
+      "swap": "Ανταλλαγή",
+      "liquidity": "Ρευστότητα",
+      "cross_swap": "Διασταυρούμενη Ανταλλαγή",
+      "bridge": "Γέφυρα"
+    },
+    "exchange": "Ανταλλακτήριο",
+    "description": "Ανταλλάξτε tokens άμεσα",
+    "market": "Αγορά",
+    "limit": "Όριο",
+    "price": "Τιμή",
+    "amount": "Ποσό",
+    "total": "Σύνολο",
+    "buy_token": "Αγορά {{token}}",
+    "settings": "Ρυθμίσεις",
+    "history": "Ιστορικό",
+    "select_token": "Επιλογή token",
+    "enter_amount": "Εισάγετε ποσό",
+    "insufficient_balance": "Ανεπαρκές υπόλοιπο",
+    "price_impact": "Επίδραση τιμής",
+    "minimum_received": "Ελάχιστο ποσό λήψης",
+    "maximum_sold": "Μέγιστο ποσό πώλησης",
+    "route": "Διαδρομή"
+  },
+  "menu": {
+    "trade": "Συναλλαγή",
+    "p2p_market": "Αγορά P2P",
+    "copy_trade": "Αντιγραφή Συναλλαγών",
+    "games": "Παιχνίδια",
+    "airdrop": "Airdrop",
+    "trading_bot": "Bot Συναλλαγών",
+    "bots": {
+      "grid": "Bot Πλέγματος",
+      "reverse_grid": "Bot Αντίστροφου Πλέγματος",
+      "infinity_grid": "Bot Άπειρου Πλέγματος",
+      "smart_trade": "Έξυπνη Συναλλαγή",
+      "stop_limit": "Όριο Διακοπής",
+      "buy_sell": "Αγορά και Πώληση",
+      "rebalancing": "Bot Επανεξισορρόπησης",
+      "market_to_market": "Bot Αγοράς προς Αγορά"
+    },
+    "staking": {
+      "title": "Staking",
+      "pools": "Πισίνες Staking",
+      "create": "Δημιουργία Staking",
+      "admin": "Διαχείριση Staking"
+    },
+    "farming": "Farming",
+    "nft_staking": "NFT Staking",
+    "multisender": "Πολλαπλή Αποστολή",
+    "partnership": "Συνεργασία",
+    "dexview": "Προβολή DEX",
+    "audit": "Έλεγχος",
+    "kyc": "KYC",
+    "docs": "Έγγραφα"
+  }
+}
