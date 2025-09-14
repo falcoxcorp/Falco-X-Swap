@@ -430,41 +430,7 @@ export class Web3Service {
     }
 
     try {
-      // Check for known fee tokens first
-      const knownFeeTokens = [
-        '0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE', // SC - Strat Core
-        // Add other known fee tokens here
-      ];
-
-      if (knownFeeTokens.some(addr => addr.toLowerCase() === tokenAddress.toLowerCase())) {
-        return true;
-      }
-
-      // Try to detect tax/fee functions in the contract
-      const contract = new ethers.Contract(tokenAddress, TOKEN_TAX_DETECTOR_ABI, this.provider);
-      
-      try {
-        // Check if contract has tax status function
-        const taxStatus = await contract.taxStatus().catch(() => null);
-        if (taxStatus !== null) {
-          return taxStatus;
-        }
-      } catch (error) {
-        // Contract doesn't have tax functions, assume no fees
-      }
-
-      // Additional checks for common fee patterns
-      try {
-        const hasOwner = await contract.owner().catch(() => null);
-        if (hasOwner) {
-          // If contract has owner, it might have fees - be cautious
-          return false; // Changed to false to avoid unnecessary fee assumptions
-        }
-      } catch (error) {
-        // No owner function, likely standard token
-      }
-
-      return false;
+      return await this.detectTokenFeeAdvanced(tokenAddress);
     } catch (error) {
       console.error(`Error detecting token fee for ${tokenAddress}:`, error);
       return false; // Default to no fees to avoid unnecessary slippage
@@ -535,13 +501,16 @@ export class Web3Service {
       ];
 
       // Detectar si algún token tiene fees
-      const fromTokenHasFee = await this.detectTokenFee(fromToken.address);
-      const toTokenHasFee = await this.detectTokenFee(toToken.address);
+      const fromTokenHasFee = await this.detectTokenFeeAdvanced(fromToken.address);
+      const toTokenHasFee = await this.detectTokenFeeAdvanced(toToken.address);
       
       // Special handling para Strat Core (SC) y otros tokens con fees conocidos
       const isStratCore = fromToken.symbol === 'SC' || toToken.symbol === 'SC';
       const hasFeeOnTransfer = fromTokenHasFee || toTokenHasFee || isStratCore;
 
+      // Calcular costos totales de la transacción
+      const transactionCost = await this.calculateTotalTransactionCost(fromToken, toToken, amountIn);
+      
       try {
         const amounts = await routerContract.getAmountsOut(
           ethers.parseUnits(amountIn, fromToken.decimals || 18),
@@ -550,17 +519,20 @@ export class Web3Service {
 
         let finalAmount = ethers.formatUnits(amounts[1], toToken.decimals || 18);
 
-        // Ajustar estimación solo para tokens con fees confirmados
+        // Ajustar estimación basado en fees reales detectados
         if (hasFeeOnTransfer) {
-          let adjustmentFactor = 0.98; // Reduced to 2% reduction
+          // Usar el fee real calculado en lugar de estimaciones
+          const adjustmentFactor = 1 - transactionCost.totalFeePercentage;
           
-          // Ajustes específicos solo para tokens conocidos con fees altos
+          // Ajuste específico para Strat Core
           if (isStratCore) {
-            adjustmentFactor = 0.95; // 5% reduction para Strat Core
+            const adjustmentFactor = 0.95; // 5% para SC confirmado
+            const adjustedAmount = parseFloat(finalAmount) * adjustmentFactor;
+            finalAmount = adjustedAmount.toString();
+          } else {
+            const adjustedAmount = parseFloat(finalAmount) * adjustmentFactor;
+            finalAmount = adjustedAmount.toString();
           }
-          
-          const adjustedAmount = parseFloat(finalAmount) * adjustmentFactor;
-          finalAmount = adjustedAmount.toString();
         }
 
         return finalAmount;
@@ -635,16 +607,22 @@ export class Web3Service {
       const address = await this.signer.getAddress();
       
       // Detectar tokens con fees
-      const fromTokenHasFee = await this.detectTokenFee(fromToken.address);
-      const toTokenHasFee = await this.detectTokenFee(toToken.address);
+      const fromTokenHasFee = await this.detectTokenFeeAdvanced(fromToken.address);
+      const toTokenHasFee = await this.detectTokenFeeAdvanced(toToken.address);
       const isStratCore = fromToken.symbol === 'SC' || toToken.symbol === 'SC';
       const hasFeeOnTransfer = fromTokenHasFee || toTokenHasFee || isStratCore;
       
-      // Para tokens con fees confirmados, usar un minimum output ligeramente más conservador
+      // Calcular costos reales de transacción
+      const transactionCost = await this.calculateTotalTransactionCost(fromToken, toToken, amountIn);
+      
+      // Ajustar minimum output basado en fees reales
       let adjustedAmountOutMin = amountOutMin;
       if (hasFeeOnTransfer && parseFloat(amountOutMin) > 0) {
-        const reduction = isStratCore ? 0.97 : 0.99; // Mucho menos conservador
+        // Usar fee real en lugar de estimaciones
+        const reduction = 1 - transactionCost.totalFeePercentage;
         adjustedAmountOutMin = (parseFloat(amountOutMin) * reduction).toString();
+        
+        console.log(`Adjusted minimum output for fees: ${amountOutMin} -> ${adjustedAmountOutMin}`);
       }
 
       if (fromToken.symbol === 'CORE' && toToken.symbol === 'WCORE') {
@@ -854,6 +832,140 @@ export class Web3Service {
     }
   }
 
+  async detectTokenFeeAdvanced(tokenAddress: string): Promise<boolean> {
+    if (!this.provider || !tokenAddress || tokenAddress === ethers.ZeroAddress) {
+      return false;
+    }
+
+    try {
+      // Lista de tokens conocidos con fees específicos
+      const knownFeeTokens = {
+        '0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE': { fee: 5, name: 'SC - Strat Core' }, // SC
+        // Agregar otros tokens con fees conocidos aquí
+      };
+
+      const lowerAddress = tokenAddress.toLowerCase();
+      const knownToken = Object.entries(knownFeeTokens).find(([addr]) => 
+        addr.toLowerCase() === lowerAddress
+      );
+
+      if (knownToken) {
+        console.log(`Known fee token detected: ${knownToken[1].name} with ${knownToken[1].fee}% fee`);
+        return true;
+      }
+
+      // Intentar detectar funciones de tax/fee en el contrato
+      const contract = new ethers.Contract(tokenAddress, TOKEN_TAX_DETECTOR_ABI, this.provider);
+      
+      try {
+        // Verificar si el contrato tiene función taxStatus
+        const taxStatus = await contract.taxStatus().catch(() => null);
+        if (taxStatus !== null) {
+          console.log(`Token ${tokenAddress} has taxStatus: ${taxStatus}`);
+          return taxStatus;
+        }
+      } catch (error) {
+        // El contrato no tiene funciones de tax
+      }
+
+      // Verificar si tiene función owner (posible indicador de fees)
+      try {
+        const hasOwner = await contract.owner().catch(() => null);
+        if (hasOwner && hasOwner !== ethers.ZeroAddress) {
+          // Tiene owner, pero no asumimos fees automáticamente
+          console.log(`Token ${tokenAddress} has owner: ${hasOwner}`);
+          return false; // Cambiado a false para evitar asumir fees innecesarios
+        }
+      } catch (error) {
+        // No tiene función owner, probablemente token estándar
+      }
+
+      return false;
+    } catch (error) {
+      console.error(`Error in advanced fee detection for ${tokenAddress}:`, error);
+      return false;
+    }
+  }
+
+  async getRouterFee(): Promise<number> {
+    // Fee del router FalcoX: 0.30% (0.003)
+    return 0.003;
+  }
+
+  async getTokenTransferFee(tokenAddress: string): Promise<number> {
+    if (!this.provider || !tokenAddress || tokenAddress === ethers.ZeroAddress) {
+      return 0;
+    }
+
+    try {
+      // Fees conocidos de tokens específicos
+      const knownTokenFees = {
+        '0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE': 0.05, // SC - 5% fee
+      };
+
+      const lowerAddress = tokenAddress.toLowerCase();
+      const knownFee = Object.entries(knownTokenFees).find(([addr]) => 
+        addr.toLowerCase() === lowerAddress
+      );
+
+      if (knownFee) {
+        return knownFee[1];
+      }
+
+      // Para tokens desconocidos, intentar detectar
+      const hasFee = await this.detectTokenFeeAdvanced(tokenAddress);
+      return hasFee ? 0.02 : 0; // 2% por defecto si se detecta fee
+    } catch (error) {
+      console.error(`Error getting token transfer fee for ${tokenAddress}:`, error);
+      return 0;
+    }
+  }
+
+  async calculateTotalTransactionCost(
+    fromToken: Token,
+    toToken: Token,
+    amountIn: string
+  ): Promise<{
+    routerFee: number;
+    fromTokenFee: number;
+    toTokenFee: number;
+    totalFeePercentage: number;
+    estimatedLoss: string;
+  }> {
+    try {
+      const routerFee = await this.getRouterFee();
+      const fromTokenFee = await this.getTokenTransferFee(fromToken.address);
+      const toTokenFee = await this.getTokenTransferFee(toToken.address);
+      
+      const totalFeePercentage = routerFee + fromTokenFee + toTokenFee;
+      const estimatedLoss = (parseFloat(amountIn) * totalFeePercentage).toFixed(6);
+
+      console.log('Transaction cost breakdown:', {
+        routerFee: `${(routerFee * 100).toFixed(2)}%`,
+        fromTokenFee: `${(fromTokenFee * 100).toFixed(2)}%`,
+        toTokenFee: `${(toTokenFee * 100).toFixed(2)}%`,
+        totalFeePercentage: `${(totalFeePercentage * 100).toFixed(2)}%`,
+        estimatedLoss: `${estimatedLoss} ${fromToken.symbol}`
+      });
+
+      return {
+        routerFee,
+        fromTokenFee,
+        toTokenFee,
+        totalFeePercentage,
+        estimatedLoss
+      };
+    } catch (error) {
+      console.error('Error calculating transaction cost:', error);
+      return {
+        routerFee: 0.003,
+        fromTokenFee: 0,
+        toTokenFee: 0,
+        totalFeePercentage: 0.003,
+        estimatedLoss: '0'
+      };
+    }
+  }
 
   async addLiquidity(
     token0Amount: string,

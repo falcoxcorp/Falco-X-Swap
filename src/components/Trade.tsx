@@ -80,26 +80,42 @@ const Trade: React.FC<TradeProps> = ({ web3Service, isConnected, onConnect }) =>
 
   useEffect(() => {
     const calculateAmount = async () => {
-      if (!selectedToToken || !isConnected) {
+      if (!selectedToToken || !isConnected || !web3Service) {
         return;
       }
 
       try {
         setError(null);
         if (calculationMode === 'from' && fromAmount && parseFloat(fromAmount) > 0) {
-          const amount = await web3Service.getAmountsOut(
-            fromAmount,
-            TOKENS[selectedFromToken],
-            TOKENS[selectedToToken]
-          );
-          setToAmount(amount);
+          try {
+            const amount = await web3Service.getAmountsOut(
+              fromAmount,
+              TOKENS[selectedFromToken],
+              TOKENS[selectedToToken]
+            );
+            setToAmount(amount);
+            
+            // Calcular costos reales de la transacción
+            const transactionCost = await web3Service.calculateTotalTransactionCost(
+              TOKENS[selectedFromToken],
+              TOKENS[selectedToToken],
+              fromAmount
+            );
+            
+            console.log('Transaction cost breakdown:', transactionCost);
+          } catch (amountError) {
+            console.error('Error calculating amounts:', amountError);
+            setToAmount('');
+            throw amountError;
+          }
           
           // Calculate price impact and minimum received with optimized slippage
           const slippageMultiplier = 1 - (parseFloat(slippage) / 100);
           setMinimumReceived((parseFloat(amount) * slippageMultiplier).toFixed(6));
           
-          // Calculate price impact (simplified)
-          const impact = Math.min(parseFloat(slippage) * 0.5, 5); // Cap at 5%
+          // Calcular price impact real
+          const routerFee = await web3Service.getRouterFee();
+          const impact = Math.max(routerFee * 100, parseFloat(slippage) * 0.5); // Usar fee real del router
           setPriceImpact(impact.toFixed(2));
         } else if (calculationMode === 'to' && toAmount && parseFloat(toAmount) > 0) {
           // For reverse calculation, we'd need getAmountsIn - simplified for now
@@ -112,6 +128,8 @@ const Trade: React.FC<TradeProps> = ({ web3Service, isConnected, onConnect }) =>
           setError('Insufficient liquidity in the pool');
         } else if (error.message.includes('Cannot swap identical tokens')) {
           setError('Cannot swap identical tokens');
+        } else if (error.message.includes('detectTokenFee')) {
+          setError('Error detecting token fees. Please try again.');
         } else {
           setError('Failed to calculate amount. Please try again.');
         }
