@@ -14,67 +14,67 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose, onSelectWall
     {
       id: 'metamask',
       name: 'Metamask',
-      icon: 'https://docs.metamask.io/img/metamask-fox.svg',
+      icon: 'https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg',
       category: 'Recent'
     },
     {
       id: 'safepal',
       name: 'SafePal Wallet',
-      icon: 'https://safepal.com/static/images/logo.png',
+      icon: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/sfp.png',
       category: 'Recent'
     },
     {
       id: 'trust',
       name: 'Trust Wallet',
-      icon: 'https://trustwallet.com/assets/images/media/assets/TWT.png',
+      icon: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/twt.png',
       category: 'Recent'
     },
     {
       id: 'bitget',
       name: 'Bitget Wallet',
-      icon: 'https://img.bitgetimg.com/multiLanguage/web/bitget_logo.png',
+      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/bitkeep.png',
       category: 'Recent'
     },
     {
       id: 'tokenpocket',
       name: 'TokenPocket',
-      icon: 'https://tp-statics.tokenpocket.pro/logo/TokenPocket_64.png',
+      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/tokenpocket.png',
       category: 'Recent'
     },
     {
       id: 'walletconnect',
       name: 'WalletConnect',
-      icon: 'https://walletconnect.com/walletconnect-logo.svg',
+      icon: 'https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Logo/Blue%20(Default)/Logo.svg',
       category: 'Recent'
     },
     {
       id: 'coinbase',
       name: 'Coinbase Wallet',
-      icon: 'https://www.coinbase.com/img/favicon.ico',
+      icon: 'https://images.ctfassets.net/q5ulk4bp65r7/3TBS4oVkD1ghowTqVQJlqj/2dfd4ea3b623a7c0d8deb2ff445dee9e/Consumer_Wordmark_White.svg',
       category: 'Recent'
     },
     {
       id: 'ledger',
       name: 'Ledger',
-      icon: 'https://www.ledger.com/wp-content/uploads/2022/02/ledger-logo.svg',
+      icon: 'https://raw.githubusercontent.com/LedgerHQ/ledger-assets/master/logos/ledger-logo-long-blue.svg',
       category: 'Hardware'
     },
     {
       id: 'browser',
       name: 'Browser Wallet',
-      icon: 'https://cdn-icons-png.flaticon.com/512/3059/3059989.png',
+      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/generic.png',
       category: 'Other'
     },
     {
       id: 'okx',
       name: 'OKX Wallet',
-      icon: 'https://static.okx.com/cdn/assets/imgs/247/58E63FEA47A2B7D7.png',
+      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/okex.png',
       category: 'Recent'
     },
     {
       id: 'ccwallet',
       name: 'CC Wallet',
-      icon: 'https://avatars.githubusercontent.com/u/52785655?s=200&v=4',
+      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/generic.png',
       category: 'Recent'
     }
   ];
