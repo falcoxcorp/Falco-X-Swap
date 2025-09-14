@@ -122,11 +122,28 @@ const RemoveLiquidity: React.FC<RemoveLiquidityProps> = ({
         return;
       }
 
+      // Step 1: Approve LP tokens for removal
+      try {
+        await web3Service.approveToken(
+          position.pairAddress, // LP token address
+          liquidityToRemove,
+          web3Service.getRouterAddress()
+        );
+      } catch (approvalError: any) {
+        console.error('LP token approval error:', approvalError);
+        if (approvalError.message === 'Transaction was rejected by user') {
+          setError('You rejected the approval transaction');
+        } else {
+          setError('Failed to approve LP tokens. Please try again.');
+        }
+        return;
+      }
+
       // Convert CORE to WCORE for contract interaction
       const token0 = position.token0.symbol === 'CORE' ? TOKENS.WCORE : position.token0;
       const token1 = position.token1.symbol === 'CORE' ? TOKENS.WCORE : position.token1;
 
-      // Remove liquidity in WCORE
+      // Step 2: Remove liquidity in WCORE
       await web3Service.removeLiquidity(
         position.pairAddress,
         token0,
