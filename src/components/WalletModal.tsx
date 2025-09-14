@@ -14,67 +14,67 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose, onSelectWall
     {
       id: 'metamask',
       name: 'Metamask',
-      icon: 'https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg',
+      icon: 'https://docs.metamask.io/img/metamask-fox.svg',
       category: 'Recent'
     },
     {
       id: 'safepal',
       name: 'SafePal Wallet',
-      icon: 'https://safepal.com/images/logo.png',
+      icon: 'https://safepal.com/static/images/logo.png',
       category: 'Recent'
     },
     {
       id: 'trust',
       name: 'Trust Wallet',
-      icon: 'https://trustwallet.com/assets/images/media/assets/trust_platform.png',
+      icon: 'https://trustwallet.com/assets/images/media/assets/TWT.png',
       category: 'Recent'
     },
     {
       id: 'bitget',
       name: 'Bitget Wallet',
-      icon: 'https://img.bitgetimg.com/multiLanguage/web/7c1b9b1b8b1b1b1b1b1b1b1b1b1b1b1b.png',
+      icon: 'https://img.bitgetimg.com/multiLanguage/web/bitget_logo.png',
       category: 'Recent'
     },
     {
       id: 'tokenpocket',
       name: 'TokenPocket',
-      icon: 'https://tp-statics.tokenpocket.pro/logo/TokenPocket.png',
+      icon: 'https://tp-statics.tokenpocket.pro/logo/TokenPocket_64.png',
       category: 'Recent'
     },
     {
       id: 'walletconnect',
       name: 'WalletConnect',
-      icon: 'https://avatars.githubusercontent.com/u/37784886',
+      icon: 'https://walletconnect.com/walletconnect-logo.svg',
       category: 'Recent'
     },
     {
       id: 'coinbase',
       name: 'Coinbase Wallet',
-      icon: 'https://images.ctfassets.net/q5ulk4bp65r7/3TBS4oVkD1ghowTqVQJlqj/2dfd4ea3b623a7c0d8deb2ff445dee9e/Consumer_Wordmark_White.svg',
+      icon: 'https://www.coinbase.com/img/favicon.ico',
       category: 'Recent'
     },
     {
       id: 'ledger',
       name: 'Ledger',
-      icon: 'https://www.ledger.com/wp-content/themes/ledger-v2/public/images/ledger-logo-long.svg',
+      icon: 'https://www.ledger.com/wp-content/uploads/2022/02/ledger-logo.svg',
       category: 'Hardware'
     },
     {
       id: 'browser',
       name: 'Browser Wallet',
-      icon: 'https://cdn-icons-png.flaticon.com/512/2965/2965879.png',
+      icon: 'https://cdn-icons-png.flaticon.com/512/3059/3059989.png',
       category: 'Other'
     },
     {
       id: 'okx',
       name: 'OKX Wallet',
-      icon: 'https://www.okx.com/cdn/assets/imgs/221/B25E06583192C52F.png',
+      icon: 'https://static.okx.com/cdn/assets/imgs/247/58E63FEA47A2B7D7.png',
       category: 'Recent'
     },
     {
       id: 'ccwallet',
       name: 'CC Wallet',
-      icon: 'https://corecustodian.org/wp-content/uploads/2024/06/Logo-2.webp',
+      icon: 'https://avatars.githubusercontent.com/u/52785655?s=200&v=4',
       category: 'Recent'
     }
   ];
