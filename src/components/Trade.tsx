@@ -87,8 +87,9 @@ const Trade: React.FC<TradeProps> = ({ web3Service, isConnected, onConnect }) =>
       try {
         setError(null);
         if (calculationMode === 'from' && fromAmount && parseFloat(fromAmount) > 0) {
+          let amount: string;
           try {
-            const amount = await web3Service.getAmountsOut(
+            amount = await web3Service.getAmountsOut(
               fromAmount,
               TOKENS[selectedFromToken],
               TOKENS[selectedToToken]
@@ -103,20 +104,22 @@ const Trade: React.FC<TradeProps> = ({ web3Service, isConnected, onConnect }) =>
             );
             
             console.log('Transaction cost breakdown:', transactionCost);
+            
+            // Calculate price impact and minimum received with optimized slippage
+            const slippageMultiplier = 1 - (parseFloat(slippage) / 100);
+            setMinimumReceived((parseFloat(amount) * slippageMultiplier).toFixed(6));
+            
+            // Calcular price impact real
+            const routerFee = await web3Service.getRouterFee();
+            const impact = Math.max(routerFee * 100, parseFloat(slippage) * 0.5); // Usar fee real del router
+            setPriceImpact(impact.toFixed(2));
           } catch (amountError) {
             console.error('Error calculating amounts:', amountError);
             setToAmount('');
+            setMinimumReceived('0');
+            setPriceImpact('0');
             throw amountError;
           }
-          
-          // Calculate price impact and minimum received with optimized slippage
-          const slippageMultiplier = 1 - (parseFloat(slippage) / 100);
-          setMinimumReceived((parseFloat(amount) * slippageMultiplier).toFixed(6));
-          
-          // Calcular price impact real
-          const routerFee = await web3Service.getRouterFee();
-          const impact = Math.max(routerFee * 100, parseFloat(slippage) * 0.5); // Usar fee real del router
-          setPriceImpact(impact.toFixed(2));
         } else if (calculationMode === 'to' && toAmount && parseFloat(toAmount) > 0) {
           // For reverse calculation, we'd need getAmountsIn - simplified for now
           setFromAmount('');
