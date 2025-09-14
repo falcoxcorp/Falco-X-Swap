@@ -26,7 +26,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose, onSelectWall
     {
       id: 'trust',
       name: 'Trust Wallet',
-      icon: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/twt.png',
+      icon: 'https://photos.pinksale.finance/file/pinksale-logo-upload/1757814047384-17046225173ba6030d3ec52e4b0897b6.png',
       category: 'Recent'
     },
     {
@@ -38,7 +38,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose, onSelectWall
     {
       id: 'tokenpocket',
       name: 'TokenPocket',
-      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/tokenpocket.png',
+      icon: 'https://photos.pinksale.finance/file/pinksale-logo-upload/1757814561668-e1c3721d249cf40590ae524ed63d6bfa.png',
       category: 'Recent'
     },
     {
@@ -50,7 +50,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose, onSelectWall
     {
       id: 'coinbase',
       name: 'Coinbase Wallet',
-      icon: 'https://images.ctfassets.net/q5ulk4bp65r7/3TBS4oVkD1ghowTqVQJlqj/2dfd4ea3b623a7c0d8deb2ff445dee9e/Consumer_Wordmark_White.svg',
+      icon: 'https://photos.pinksale.finance/file/pinksale-logo-upload/1757814618129-636723b9234071ff64e5b9549ba84876.png',
       category: 'Recent'
     },
     {
@@ -68,7 +68,7 @@ const WalletModal: React.FC<WalletModalProps> = ({ isOpen, onClose, onSelectWall
     {
       id: 'okx',
       name: 'OKX Wallet',
-      icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/dapps/okex.png',
+      icon: 'https://photos.pinksale.finance/file/pinksale-logo-upload/1757814504078-ab24aa4fccb165dc3ea539fa6f40d2c9.png',
       category: 'Recent'
     },
     {
