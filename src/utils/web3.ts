@@ -482,6 +482,10 @@ export class Web3Service {
       // Detectar si algún token tiene fees
       const fromTokenHasFee = await this.detectTokenFee(fromToken.address);
       const toTokenHasFee = await this.detectTokenFee(toToken.address);
+      
+      // Especial handling para Strat Core (SC) y otros tokens con fees conocidos
+      const isStratCore = fromToken.symbol === 'SC' || toToken.symbol === 'SC';
+      const hasFeeOnTransfer = fromTokenHasFee || toTokenHasFee || isStratCore;
 
       try {
         const amounts = await routerContract.getAmountsOut(
@@ -491,9 +495,16 @@ export class Web3Service {
 
         let finalAmount = ethers.formatUnits(amounts[1], toToken.decimals || 18);
 
-        // Si el token de destino tiene fee, reducir la estimación para ser más conservador
-        if (toTokenHasFee) {
-          const adjustedAmount = parseFloat(finalAmount) * 0.85; // Reducir 15% por posibles fees
+        // Ajustar estimación para tokens con fees
+        if (hasFeeOnTransfer) {
+          let adjustmentFactor = 0.85; // Default 15% reduction
+          
+          // Ajustes específicos para tokens conocidos
+          if (isStratCore) {
+            adjustmentFactor = 0.80; // 20% reduction para Strat Core
+          }
+          
+          const adjustedAmount = parseFloat(finalAmount) * adjustmentFactor;
           finalAmount = adjustedAmount.toString();
         }
 
@@ -556,8 +567,10 @@ export class Web3Service {
         throw new Error('Invalid input amount');
       }
 
+      // Validación más robusta para minimum output amount
       if (isNaN(amountOutMinNum) || amountOutMinNum < 0) {
-        throw new Error('Invalid minimum output amount');
+        console.warn('Invalid minimum output amount, setting to 0 for fee tokens');
+        amountOutMin = '0';
       }
 
       if (fromToken.address === toToken.address) {
@@ -565,6 +578,19 @@ export class Web3Service {
       }
 
       const address = await this.signer.getAddress();
+      
+      // Detectar tokens con fees
+      const fromTokenHasFee = await this.detectTokenFee(fromToken.address);
+      const toTokenHasFee = await this.detectTokenFee(toToken.address);
+      const isStratCore = fromToken.symbol === 'SC' || toToken.symbol === 'SC';
+      const hasFeeOnTransfer = fromTokenHasFee || toTokenHasFee || isStratCore;
+      
+      // Para tokens con fees, usar un minimum output más conservador
+      let adjustedAmountOutMin = amountOutMin;
+      if (hasFeeOnTransfer && parseFloat(amountOutMin) > 0) {
+        const reduction = isStratCore ? 0.75 : 0.85; // Más conservador para Strat Core
+        adjustedAmountOutMin = (parseFloat(amountOutMin) * reduction).toString();
+      }
 
       if (fromToken.symbol === 'CORE' && toToken.symbol === 'WCORE') {
         const wcoreContract = new ethers.Contract(TOKENS.WCORE.address, WCORE_ABI, this.signer);
@@ -600,22 +626,17 @@ export class Web3Service {
       ];
 
       const parsedAmountIn = ethers.parseUnits(amountIn, fromToken.decimals || 18);
-      const parsedAmountOutMin = ethers.parseUnits(amountOutMin, toToken.decimals || 18);
-
-      // Detectar si algún token tiene fees/tax
-      const fromTokenHasFee = await this.detectTokenFee(fromToken.address);
-      const toTokenHasFee = await this.detectTokenFee(toToken.address);
-      const hasFeeOnTransfer = fromTokenHasFee || toTokenHasFee;
+      const parsedAmountOutMin = ethers.parseUnits(adjustedAmountOutMin, toToken.decimals || 18);
 
       const estimateGas = async (method: string, args: any[], value?: bigint) => {
         try {
           // Para tokens con fee, usar un gas límite más alto
-          const baseGasLimit = hasFeeOnTransfer ? 800000n : 500000n;
+          const baseGasLimit = hasFeeOnTransfer ? 1000000n : 500000n;
           
           try {
             const estimatedGas = await this.router!.estimateGas[method](...args, { value });
             // Aumentar el buffer para tokens con fee
-            const gasBuffer = hasFeeOnTransfer ? 180n : 130n;
+            const gasBuffer = hasFeeOnTransfer ? 200n : 130n;
             return estimatedGas * gasBuffer / 100n;
           } catch (gasError) {
             console.warn('Gas estimation failed, using fallback value for fee token:', gasError);
@@ -623,7 +644,7 @@ export class Web3Service {
           }
         } catch (error) {
           console.warn('Gas estimation failed, using fallback value', error);
-          return hasFeeOnTransfer ? 800000n : 500000n;
+          return hasFeeOnTransfer ? 1000000n : 500000n;
         }
       };
 
@@ -635,7 +656,7 @@ export class Web3Service {
 
       try {
         if (fromToken.symbol === 'CORE') {
-          if (toTokenHasFee) {
+          if (hasFeeOnTransfer) {
             // Usar función específica para tokens con fee
             const gasLimit = await estimateGas(
               'swapExactETHForTokensSupportingFeeOnTransferTokens',
@@ -672,7 +693,7 @@ export class Web3Service {
             );
           }
         } else if (toToken.symbol === 'CORE') {
-          if (fromTokenHasFee) {
+          if (hasFeeOnTransfer) {
             // Usar función específica para tokens con fee
             const gasLimit = await estimateGas(
               'swapExactTokensForETHSupportingFeeOnTransferTokens',
@@ -756,7 +777,7 @@ export class Web3Service {
       }
 
       if (error.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
-        throw new Error('Price impact too high. Try increasing slippage tolerance.');
+        throw new Error('Price impact too high or token has fees. Try increasing slippage tolerance to 15-25%.');
       }
 
       if (error.message?.includes('INSUFFICIENT_LIQUIDITY')) {
@@ -774,6 +795,12 @@ export class Web3Service {
       if (error.message?.includes('gas')) {
         throw new Error('Transaction failed due to gas estimation issues. Please try again with higher gas limit.');
       }
+      
+      // Manejo específico para errores de minimum output amount
+      if (error.message?.includes('Invalid minimum output amount') || 
+          error.message?.includes('minimum output amount')) {
+        throw new Error('Minimum output amount too restrictive. This token may have fees. Try increasing slippage to 20-25%.');
+      }
 
       if (error.message && typeof error.message === 'string') {
         throw new Error(error.message);
@@ -787,6 +814,15 @@ export class Web3Service {
   private async detectTokenFee(tokenAddress: string): Promise<boolean> {
     if (!this.provider || tokenAddress === ethers.ZeroAddress) {
       return false;
+    }
+    
+    // Lista de tokens conocidos con fees
+    const KNOWN_FEE_TOKENS = [
+      '0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE', // Strat Core (SC)
+    ];
+    
+    if (KNOWN_FEE_TOKENS.includes(tokenAddress.toLowerCase())) {
+      return true;
     }
 
     try {
