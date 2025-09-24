@@ -175,7 +175,7 @@ function App() {
     { icon: HandshakeIcon, label: t('menu.partnership'), comingSoon: true },
     { icon: Users, label: 'Social Falco-X', externalLink: 'https://social.falcox.net/' },
     { icon: BarChart2, label: 'DexAnalyzer', externalLink: 'https://dexanalyzer.falcox.net/' },
-    { icon: Gamepad2, label: 'Falco-X Fun Memes', comingSoon: true },
+    { icon: Gamepad2, label: 'Falco-X Fun Memes', externalLink: 'https://fun.falcox.net/' },
     { icon: Shield, label: t('menu.audit'), onClick: () => setCurrentView('audit') },
     { icon: FileCheck, label: t('menu.kyc'), onClick: () => setCurrentView('kyc') },
     { icon: BookOpen, label: t('menu.docs'), externalLink: 'https://falcox.gitbook.io/falcox' },
