@@ -47,44 +47,38 @@ const Footer: React.FC = () => {
 
   return (
     <>
-    <>
-      <footer className="bg-gray-950/95 backdrop-blur-md border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
+      <footer className="bg-gray-950 border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
             
             {/* Company Information */}
-            <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
                 <img 
                   src="https://swap.falcox.net/images/tokens/0x49cc83dc4cf5d3ecdb0b6dd9657c951c52ec7dfa.png"
                   alt="FalcoX"
-                  className="h-7 w-7"
+                  className="h-6 w-6"
                 />
-                <div className="flex flex-col">
-                  <span className="text-base font-semibold text-white tracking-wide">FalcoX</span>
-                  <span className="text-xs text-gray-500 font-medium">Decentralized Exchange</span>
+                <div>
+                  <span className="text-sm font-medium text-white">FalcoX</span>
+                  <span className="text-xs text-gray-500 ml-2">Decentralized Exchange</span>
                 </div>
               </div>
               
-              <div className="hidden lg:block w-px h-8 bg-gray-700"></div>
+              <div className="hidden lg:block w-px h-6 bg-gray-700"></div>
               
-              <div className="text-center lg:text-left">
-                <p className="text-xs text-gray-400 font-medium">
-                  Built on Core Blockchain
-                </p>
-                <p className="text-xs text-gray-500">
-                  Secure • Fast • Decentralized
-                </p>
+              <div className="text-xs text-gray-500">
+                Built on Core Blockchain
               </div>
             </div>
 
             {/* Contact & Social */}
-            <div className="flex flex-col lg:flex-row items-center gap-6">
+            <div className="flex items-center gap-6">
               <div className="flex items-center gap-1">
                 <span className="text-xs text-gray-500 mr-2">Connect:</span>
                 <a 
                   href="mailto:contac@falcox.net" 
-                  className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors rounded"
+                  className="p-2 text-gray-500 hover:text-gray-300 transition-colors"
                   title="Email"
                 >
                   <Mail className="w-4 h-4" />
@@ -93,7 +87,7 @@ const Footer: React.FC = () => {
                   href="https://t.me/Falco_X_CORP" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors rounded"
+                  className="p-2 text-gray-500 hover:text-gray-300 transition-colors"
                   title="Telegram"
                 >
                   <MessageCircle className="w-4 h-4" />
@@ -102,7 +96,7 @@ const Footer: React.FC = () => {
                   href="https://x.com/FalcoX_Corp" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors rounded"
+                  className="p-2 text-gray-500 hover:text-gray-300 transition-colors"
                   title="Twitter"
                 >
                   <Twitter className="w-4 h-4" />
@@ -111,44 +105,44 @@ const Footer: React.FC = () => {
                   href="https://discord.gg/84Ddm2DT" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors rounded"
+                  className="p-2 text-gray-500 hover:text-gray-300 transition-colors"
                   title="Discord"
                 >
                   <FaDiscord className="w-4 h-4" />
                 </a>
               </div>
 
-              <div className="hidden lg:block w-px h-8 bg-gray-700"></div>
+              <div className="hidden lg:block w-px h-6 bg-gray-700"></div>
 
-              {/* Legal & Info */}
-              <div className="flex items-center gap-4">
+              {/* Legal Links */}
+              <div className="flex items-center gap-3">
                 <button 
                   onClick={handleTermsClick}
-                  className={`text-xs text-gray-500 hover:text-gray-300 transition-colors font-medium ${!hasAcceptedTerms ? 'cursor-not-allowed opacity-50' : ''}`}
+                  className={`text-xs text-gray-500 hover:text-gray-300 transition-colors ${!hasAcceptedTerms ? 'cursor-not-allowed opacity-50' : ''}`}
                 >
-                  Terms of Service
+                  Terms
                 </button>
                 <span className="text-gray-700">•</span>
                 <a 
                   href="#" 
-                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors font-medium"
+                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
                 >
-                  Privacy Policy
+                  Privacy
                 </a>
                 <span className="text-gray-700">•</span>
                 <button 
                   onClick={handleDocumentationClick}
-                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors font-medium"
+                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
                 >
-                  Documentation
+                  Docs
                 </button>
               </div>
             </div>
           </div>
           
           {/* Copyright */}
-          <div className="mt-4 pt-4 border-t border-gray-800/50 text-center">
-            <p className="text-xs text-gray-600 font-medium">
+          <div className="mt-4 pt-4 border-t border-gray-800 text-center">
+            <p className="text-xs text-gray-600">
               © {new Date().getFullYear()} FalcoX. All rights reserved.
             </p>
           </div>
@@ -216,14 +210,12 @@ const Footer: React.FC = () => {
           </div>
         </div>
       )}
-      </footer>
 
       {/* Documentation Modal */}
       <Documentation 
         isOpen={showDocumentation}
         onClose={() => setShowDocumentation(false)}
       />
-    </>
     </>
   );
 };
