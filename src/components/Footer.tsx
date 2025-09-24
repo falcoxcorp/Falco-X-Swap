@@ -47,80 +47,111 @@ const Footer: React.FC = () => {
 
   return (
     <>
-      <footer className="bg-gray-900/20 backdrop-blur-sm border-t border-gray-800/50">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            {/* Brand Section */}
-            <div className="flex items-center gap-3">
-              <img 
-                src="https://swap.falcox.net/images/tokens/0x49cc83dc4cf5d3ecdb0b6dd9657c951c52ec7dfa.png"
-                alt="FalcoX"
-                className="h-6 w-6"
-              />
-              <span className="text-lg font-medium text-white">FalcoX</span>
-              <span className="text-xs text-gray-400">© {new Date().getFullYear()}</span>
+      <footer className="bg-gray-950/95 backdrop-blur-md border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
+            
+            {/* Company Information */}
+            <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
+              <div className="flex items-center gap-3">
+                <img 
+                  src="https://swap.falcox.net/images/tokens/0x49cc83dc4cf5d3ecdb0b6dd9657c951c52ec7dfa.png"
+                  alt="FalcoX"
+                  className="h-7 w-7"
+                />
+                <div className="flex flex-col">
+                  <span className="text-base font-semibold text-white tracking-wide">FalcoX</span>
+                  <span className="text-xs text-gray-500 font-medium">Decentralized Exchange</span>
+                </div>
+              </div>
+              
+              <div className="hidden lg:block w-px h-8 bg-gray-700"></div>
+              
+              <div className="text-center lg:text-left">
+                <p className="text-xs text-gray-400 font-medium">
+                  Built on Core Blockchain
+                </p>
+                <p className="text-xs text-gray-500">
+                  Secure • Fast • Decentralized
+                </p>
+              </div>
             </div>
 
-            {/* Social Links */}
-            <div className="flex items-center gap-3">
-              <a 
-                href="mailto:contac@falcox.net" 
-                className="p-2 text-gray-400 hover:text-white transition-colors"
-                title="Contact us"
-              >
-                <Mail className="w-4 h-4" />
-              </a>
-              <a 
-                href="https://t.me/Falco_X_CORP" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="p-2 text-gray-400 hover:text-blue-400 transition-colors"
-                title="Telegram"
-              >
-                <MessageCircle className="w-4 h-4" />
-              </a>
-              <a 
-                href="https://x.com/FalcoX_Corp" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="p-2 text-gray-400 hover:text-blue-400 transition-colors"
-                title="Twitter"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a 
-                href="https://discord.gg/84Ddm2DT" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="p-2 text-gray-400 hover:text-indigo-400 transition-colors"
-                title="Discord"
-              >
-                <FaDiscord className="w-4 h-4" />
-              </a>
-            </div>
+            {/* Contact & Social */}
+            <div className="flex flex-col lg:flex-row items-center gap-6">
+              <div className="flex items-center gap-1">
+                <span className="text-xs text-gray-500 mr-2">Connect:</span>
+                <a 
+                  href="mailto:contac@falcox.net" 
+                  className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors rounded"
+                  title="Email"
+                >
+                  <Mail className="w-4 h-4" />
+                </a>
+                <a 
+                  href="https://t.me/Falco_X_CORP" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors rounded"
+                  title="Telegram"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                </a>
+                <a 
+                  href="https://x.com/FalcoX_Corp" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors rounded"
+                  title="Twitter"
+                >
+                  <Twitter className="w-4 h-4" />
+                </a>
+                <a 
+                  href="https://discord.gg/84Ddm2DT" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors rounded"
+                  title="Discord"
+                >
+                  <FaDiscord className="w-4 h-4" />
+                </a>
+              </div>
 
-            {/* Legal Links */}
-            <div className="flex items-center gap-4 text-xs text-gray-400">
-              <button 
-                onClick={handleTermsClick}
-                className={`hover:text-white transition-colors ${!hasAcceptedTerms ? 'cursor-not-allowed opacity-50' : ''}`}
-              >
-                Terms
-              </button>
-              <a 
-                href="#" 
-                className="hover:text-white transition-colors"
-              >
-                Privacy
-              </a>
-              <button 
-                onClick={handleDocumentationClick}
-                className="hover:text-white transition-colors"
-              >
-                Docs
-              </button>
+              <div className="hidden lg:block w-px h-8 bg-gray-700"></div>
+
+              {/* Legal & Info */}
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={handleTermsClick}
+                  className={`text-xs text-gray-500 hover:text-gray-300 transition-colors font-medium ${!hasAcceptedTerms ? 'cursor-not-allowed opacity-50' : ''}`}
+                >
+                  Terms of Service
+                </button>
+                <span className="text-gray-700">•</span>
+                <a 
+                  href="#" 
+                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors font-medium"
+                >
+                  Privacy Policy
+                </a>
+                <span className="text-gray-700">•</span>
+                <button 
+                  onClick={handleDocumentationClick}
+                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors font-medium"
+                >
+                  Documentation
+                </button>
+              </div>
             </div>
           </div>
+          
+          {/* Copyright */}
+          <div className="mt-4 pt-4 border-t border-gray-800/50 text-center">
+            <p className="text-xs text-gray-600 font-medium">
+              © {new Date().getFullYear()} FalcoX. All rights reserved.
+            </p>
+          </div>
+        </div>
         </div>
 
         {/* Terms Modal */}
