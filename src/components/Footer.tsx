@@ -123,7 +123,7 @@ const Footer: React.FC = () => {
                 </p>
                 
                 <div className="flex space-x-4 mb-6">
-                  <a href="mailto:contact@falcox.net" className="p-2 bg-gray-800 rounded-full hover:bg-blue-600 transition-all group">
+                  <a href="mailto:contac@falcox.net" className="p-2 bg-gray-800 rounded-full hover:bg-blue-600 transition-all group">
                     <Mail className="w-5 h-5 text-gray-300 group-hover:text-white group-hover:scale-110 transition-transform" />
                   </a>
                   <a href="https://t.me/Falco_X_CORP" target="_blank" rel="noopener noreferrer" className="p-2 bg-gray-800 rounded-full hover:bg-blue-500 transition-all group">
