@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
   const socialLinks = [
     {
       name: 'Email',
-      href: 'mailto:contac@falcox.net',
+      href: 'mcontac@falcox.net',
       icon: Mail,
       external: false
     },
