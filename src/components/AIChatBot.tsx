@@ -563,7 +563,7 @@ Before each trade, check the token's behavior on the chart. A well-thought-out s
       className={`fixed right-4 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-2xl shadow-2xl overflow-hidden z-50 ${
         isMinimized 
           ? 'bottom-4 w-72 h-16' 
-          : 'bottom-4 sm:bottom-20 w-[90vw] sm:w-[24rem] h-[80vh] sm:h-[32rem] max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-8rem)]'
+          : 'bottom-4 w-[90vw] sm:w-[24rem] h-[80vh] sm:h-[32rem] max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-8rem)] max-w-[calc(100vw-2rem)]'
       }`}
       style={{
         boxShadow: '0 10px 25px -5px rgba(59, 130, 246, 0.3), 0 10px 10px -5px rgba(147, 51, 234, 0.2)'
