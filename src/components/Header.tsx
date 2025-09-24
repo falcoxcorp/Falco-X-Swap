@@ -231,17 +231,12 @@ const Header: React.FC<HeaderProps> = ({
       
       const tokenPromises = TRACKED_TOKENS.map(async (token, index) => {
         try {
-          const data = await fetchTokenData(token.address, token.specificPool);
+          const data = await fetchTokenData(token.address, false);
           
-          let pairData;
-          if (token.specificPool) {
-            pairData = data.pair || {};
-          } else {
-            const sortedPairs = data.pairs?.sort((a: any, b: any) => 
-              (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0)
-            );
-            pairData = sortedPairs?.[0] || {};
-          }
+          const sortedPairs = data.pairs?.sort((a: any, b: any) => 
+            (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0)
+          );
+          const pairData = sortedPairs?.[0] || {};
           
           return {
             symbol: token.symbol,
@@ -314,7 +309,7 @@ const Header: React.FC<HeaderProps> = ({
     
     const intervals = TRACKED_TOKENS.map((token, index) => {
       return setInterval(() => {
-        updateSingleToken(token.address, token.symbol, token.specificPool || false);
+        updateSingleToken(token.address, token.symbol, false);
       }, 30000 + (index * 2000));
     });
 
@@ -325,15 +320,10 @@ const Header: React.FC<HeaderProps> = ({
     try {
       const data = await fetchTokenData(address, isSpecificPool);
       
-      let pairData;
-      if (isSpecificPool) {
-        pairData = data.pair || {};
-      } else {
-        const sortedPairs = data.pairs?.sort((a: any, b: any) => 
-          (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0)
-        );
-        pairData = sortedPairs?.[0] || {};
-      }
+      const sortedPairs = data.pairs?.sort((a: any, b: any) => 
+        (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0)
+      );
+      const pairData = sortedPairs?.[0] || {};
       
       setTokensData(prev => ({
         ...prev,
@@ -378,11 +368,138 @@ const Header: React.FC<HeaderProps> = ({
     ...RANDOM_TOKENS
   ];
 
+  const displayTokens = prices.slice(0, 15);
+
   return (
     <>
-      <div className="flex flex-col">
-        {/* Header content will go here */}
-      </div>
+      <header className="bg-gray-900 border-b border-gray-700">
+        {/* Top Bar */}
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-2">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-4">
+                <span className="text-white text-sm font-medium">Live Prices</span>
+                <div className="flex items-center space-x-2 overflow-hidden">
+                  <div className="flex space-x-6 animate-marquee whitespace-nowrap">
+                    {displayTokens.map((token) => (
+                      <a
+                        key={token.symbol}
+                        href={token.poolUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-2 text-white hover:text-gray-200 transition-colors"
+                      >
+                        {token.logoUrl && (
+                          <img 
+                            src={token.logoUrl} 
+                            alt={token.symbol}
+                            className="w-4 h-4 rounded-full"
+                          />
+                        )}
+                        <span className="font-medium">{token.symbol}</span>
+                        <span className="text-gray-200">${token.price}</span>
+                        <span className={`flex items-center text-xs ${
+                          token.priceChange >= 0 ? 'text-green-300' : 'text-red-300'
+                        }`}>
+                          {token.priceChange >= 0 ? (
+                            <TrendingUp className="w-3 h-3 mr-1" />
+                          ) : (
+                            <TrendingDown className="w-3 h-3 mr-1" />
+                          )}
+                          {Math.abs(token.priceChange).toFixed(2)}%
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                {loading && (
+                  <div className="flex items-center text-white text-sm">
+                    <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                    Actualizando...
+                  </div>
+                )}
+                {error && (
+                  <span className="text-yellow-300 text-sm">{error}</span>
+                )}
+                <span className="text-white text-sm">Última actualización: {lastUpdate}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Header */}
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Left Section */}
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={onMenuClick}
+                className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
+              >
+                <Menu className="w-6 h-6 text-white" />
+              </button>
+              
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">S</span>
+                </div>
+                <div>
+                  <h1 className="text-white text-xl font-bold">StratSwap</h1>
+                  <p className="text-gray-400 text-sm">DeFi Exchange</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Center Section - Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="/swap" className="text-white hover:text-blue-400 transition-colors font-medium">Swap</a>
+              <a href="/liquidity" className="text-white hover:text-blue-400 transition-colors font-medium">Liquidity</a>
+              <a href="/farms" className="text-white hover:text-blue-400 transition-colors font-medium">Farms</a>
+              <a href="/pools" className="text-white hover:text-blue-400 transition-colors font-medium">Pools</a>
+              <a href="/bridge" className="text-white hover:text-blue-400 transition-colors font-medium">Bridge</a>
+            </nav>
+
+            {/* Right Section */}
+            <div className="flex items-center space-x-4">
+              <LanguageSelector />
+              
+              {isConnected ? (
+                <div className="flex items-center space-x-3">
+                  <div className="bg-green-500/20 border border-green-500/30 rounded-full px-3 py-1">
+                    <span className="text-green-400 text-sm font-medium">
+                      {address.slice(0, 6)}...{address.slice(-4)}
+                    </span>
+                  </div>
+                  <button
+                    onClick={onDisconnect}
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsWalletModalOpen(true)}
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-2 rounded-lg transition-all duration-200 font-medium"
+                >
+                  Connect Wallet
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <WalletModal
+        isOpen={isWalletModalOpen}
+        onClose={() => setIsWalletModalOpen(false)}
+        onWalletSelect={handleWalletSelect}
+      />
     </>
-  )
-}
+  );
+};
+
+export default Header;
