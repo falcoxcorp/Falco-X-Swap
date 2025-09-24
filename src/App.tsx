@@ -127,15 +127,7 @@ function App() {
     {
       icon: Sparkles,
       label: 'Create Tokens',
-     comingSoon: true,
-      hasSubmenu: true,
-      submenu: [
-        { icon: CoinsIcon, label: 'Standard Token', onClick: () => setCurrentView('standard-token') },
-        { icon: CoinsIcon, label: 'Liquidity Generator Token', onClick: () => setCurrentView('liquidity-generator-token') },
-        { icon: CoinsIcon, label: 'Baby Token', onClick: () => setCurrentView('baby-token') },
-        { icon: CoinsIcon, label: 'Buyback Baby Token', onClick: () => setCurrentView('buyback-baby-token') },
-        { icon: CoinsIcon, label: 'Advanced Tokens', onClick: () => setCurrentView('advanced-token') },
-      ],
+      externalLink: 'https://createtokens.falcox.net/',
     },
     {
       icon: Layers,
