@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, TrendingUp, TrendingDown, Loader2, RefreshCw } from 'lucide-react';
+import { Menu, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
 import WalletModal from './WalletModal';
 import LanguageSelector from './LanguageSelector';
 import { Web3Service } from '../utils/web3';
@@ -24,22 +24,124 @@ interface TokenData {
   logoUrl?: string;
   poolUrl?: string;
   updatedAt?: number;
-  address: string;
 }
 
-// Tokens que queremos forzar en las primeras posiciones
-const PRIORITY_TOKENS = [
+// Lista completa de tokens a rastrear (principales)
+const TRACKED_TOKENS = [
   {
-    address: "0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE", // SC - Strat Core
+    address: "0x5ebae3a840ff34b107d637c8ed07c3d1d2017178", // WCORE (pool específico)
+    symbol: "CORE",
+    name: "Wrapped CORE",
+    logoUrl: "https://pipiswap.finance/images/tokens/0x40375c92d9faf44d2f9db9bd9ba41a3317a2404f.png",
+    specificPool: true
+  },
+  {
+    address: "0x892CCdD2624ef09Ca5814661c566316253353820", // BUGS
+    symbol: "BUGS",
+    name: "Bugs Bunny",
+    logoUrl: "https://swap.falcox.net/images/tokens/0x892CCdD2624ef09Ca5814661c566316253353820.png"
+  },
+  {
+    address: "0x3034802fc4c9a278d0886ed77fd3f79fd789c898", // PIPI
+    symbol: "PIPI",
+    name: "PIPILOL",
+    logoUrl: "https://bnb.pipiswap.finance/images/tokens/0xf86e639ff387b6064607201a7a98f2c2b2feb05f.png"
+  },
+  {
+    address: "0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE", // SC
     symbol: "SC",
     name: "Strat Core",
     logoUrl: "https://photos.pinksale.finance/file/pinksale-logo-upload/1742349083597-5992f1e2232da2a5d4bde148da95a95f.png"
   },
   {
-    address: "0x892CCdD2624ef09Ca5814661c566316253353820", // BUGS - Bugs Bunny
-    symbol: "BUGS",
-    name: "Bugs Bunny",
-    logoUrl: "https://swap.falcox.net/images/tokens/0x892CCdD2624ef09Ca5814661c566316253353820.png"
+    address: "0xc5555ea27e63cd89f8b227dece2a3916800c0f4f", // DC
+    symbol: "DC",
+    name: "Dual CORE",
+    logoUrl: "https://photos.pinksale.finance/file/pinksale-logo-upload/1752125351861-d77af108bfaad0821f81463c3e24af21.png"
+  }
+];
+
+// Tokens aleatorios para completar (con logos verificados)
+const RANDOM_TOKENS = [
+  { 
+    rank: 6, 
+    symbol: 'SHIB', 
+    name: 'Shiba Inu', 
+    price: '0.000024', 
+    priceChange: 1.2, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/11939/large/shiba.png?1696511800' 
+  },
+  { 
+    rank: 7, 
+    symbol: 'DOGE', 
+    name: 'Dogecoin', 
+    price: '0.12', 
+    priceChange: -0.5, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/5/large/dogecoin.png?1696501409' 
+  },
+  { 
+    rank: 8, 
+    symbol: 'PEPE', 
+    name: 'Pepe', 
+    price: '0.0000012', 
+    priceChange: 5.7, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/29850/large/pepe-token.jpeg?1696528776' 
+  },
+  { 
+    rank: 9, 
+    symbol: 'FLOKI', 
+    name: 'Floki Inu', 
+    price: '0.00018', 
+    priceChange: 2.3, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/16746/large/PNG_image.png?1696516318' 
+  },
+  { 
+    rank: 10, 
+    symbol: 'BONK', 
+    name: 'Bonk', 
+    price: '0.000023', 
+    priceChange: -1.8, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/28600/large/bonk.jpg?1696527587' 
+  },
+  { 
+    rank: 11, 
+    symbol: 'LTC', 
+    name: 'Litecoin', 
+    price: '72.34', 
+    priceChange: 0.8, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/2/large/litecoin.png?1696501400' 
+  },
+  { 
+    rank: 12, 
+    symbol: 'XRP', 
+    name: 'Ripple', 
+    price: '0.52', 
+    priceChange: -0.3, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png?1696501442' 
+  },
+  { 
+    rank: 13, 
+    symbol: 'SOL', 
+    name: 'Solana', 
+    price: '145.67', 
+    priceChange: 3.2, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/4128/large/solana.png?1696504756' 
+  },
+  { 
+    rank: 14, 
+    symbol: 'ADA', 
+    name: 'Cardano', 
+    price: '0.45', 
+    priceChange: -1.1, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/975/large/cardano.png?1696502090' 
+  },
+  { 
+    rank: 15, 
+    symbol: 'AVAX', 
+    name: 'Avalanche', 
+    price: '35.21', 
+    priceChange: 2.5, 
+    logoUrl: 'https://assets.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png?1696512369' 
   }
 ];
 
@@ -52,7 +154,7 @@ const Header: React.FC<HeaderProps> = ({
   onMenuClick
 }) => {
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
-  const [tokensData, setTokensData] = useState<TokenData[]>([]);
+  const [tokensData, setTokensData] = useState<Record<string, TokenData>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<string>('');
@@ -69,80 +171,25 @@ const Header: React.FC<HeaderProps> = ({
     return numPrice.toFixed(4).replace(/\.?0+$/, '');
   };
 
-  const fetchTopPools = async (): Promise<TokenData[]> => {
+  const fetchTokenData = async (tokenAddress: string, isSpecificPool = false, retries = 3): Promise<any> => {
     try {
-      // API de GeckoTerminal para pools de Core chain
-      const response = await fetch('https://api.geckoterminal.com/api/v2/networks/core/pools?page=1&limit=20');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      let url;
+      if (isSpecificPool) {
+        url = `https://api.dexscreener.com/latest/dex/pairs/core/${tokenAddress}`;
+      } else {
+        url = `https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`;
       }
       
-      const data = await response.json();
-      
-      if (!data.data || !Array.isArray(data.data)) {
-        throw new Error('Invalid response format');
-      }
-
-      const pools = data.data;
-      
-      // Procesar los pools y convertirlos a TokenData
-      const processedTokens: TokenData[] = pools.map((pool: any, index: number) => {
-        const attributes = pool.attributes;
-        const baseToken = attributes.base_token;
-        const quoteToken = attributes.quote_token;
-        
-        // Usar el token base para la información principal
-        return {
-          rank: index + 1,
-          symbol: baseToken.symbol,
-          name: baseToken.name,
-          price: formatPrice(attributes.base_token_price_usd),
-          priceChange: attributes.price_change_percentage?.h24 || 0,
-          volume24h: attributes.volume_usd?.h24 || 0,
-          liquidity: attributes.reserve_in_usd || 0,
-          logoUrl: baseToken.image_url,
-          poolUrl: `https://www.geckoterminal.com/es/core/pools/${pool.id}`,
-          updatedAt: Date.now(),
-          address: baseToken.address
-        };
-      });
-
-      return processedTokens;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return await response.json();
     } catch (err) {
-      console.error('Error fetching top pools:', err);
-      throw new Error('Failed to fetch token data from GeckoTerminal');
-    }
-  };
-
-  const prioritizeTokens = (tokens: TokenData[]): TokenData[] => {
-    const prioritized: TokenData[] = [];
-    const remainingTokens = [...tokens];
-    
-    // Buscar y colocar primero los tokens prioritarios
-    PRIORITY_TOKENS.forEach(priorityToken => {
-      const foundIndex = remainingTokens.findIndex(token => 
-        token.address.toLowerCase() === priorityToken.address.toLowerCase() ||
-        token.symbol.toLowerCase() === priorityToken.symbol.toLowerCase()
-      );
-      
-      if (foundIndex !== -1) {
-        const [priority] = remainingTokens.splice(foundIndex, 1);
-        prioritized.push({
-          ...priority,
-          rank: prioritized.length + 1
-        });
+      if (retries > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * (4 - retries)));
+        return fetchTokenData(tokenAddress, isSpecificPool, retries - 1);
       }
-    });
-    
-    // Agregar los tokens restantes
-    const finalTokens = [...prioritized, ...remainingTokens.slice(0, 15 - prioritized.length)];
-    
-    // Reasignar ranks correctamente
-    return finalTokens.map((token, index) => ({
-      ...token,
-      rank: index + 1
-    }));
+      throw err;
+    }
   };
 
   const updateTokenPrices = async () => {
@@ -150,24 +197,72 @@ const Header: React.FC<HeaderProps> = ({
       setLoading(true);
       setError(null);
       
-      const topPools = await fetchTopPools();
-      const prioritizedTokens = prioritizeTokens(topPools);
+      const updatedTokens: Record<string, TokenData> = {};
+      const updateTime = new Date().toLocaleTimeString();
       
-      setTokensData(prioritizedTokens);
-      setLastUpdate(new Date().toLocaleTimeString());
-      
-      // Guardar en localStorage como respaldo
-      localStorage.setItem('coreTokensData', JSON.stringify({
-        data: prioritizedTokens,
-        lastUpdate: new Date().toLocaleTimeString()
+      const tokenPromises = TRACKED_TOKENS.map(async (token, index) => {
+        try {
+          const data = await fetchTokenData(token.address, token.specificPool);
+          
+          let pairData;
+          if (token.specificPool) {
+            pairData = data.pair || {};
+          } else {
+            const sortedPairs = data.pairs?.sort((a: any, b: any) => 
+              (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0)
+            );
+            pairData = sortedPairs?.[0] || {};
+          }
+          
+          return {
+            symbol: token.symbol,
+            data: {
+              rank: index + 1,
+              symbol: token.symbol,
+              name: token.name,
+              price: formatPrice(pairData.priceUsd || 0),
+              priceChange: pairData.priceChange?.h24 || 0,
+              volume24h: pairData.volume?.h24 || 0,
+              liquidity: pairData.liquidity?.usd || 0,
+              logoUrl: token.logoUrl,
+              poolUrl: pairData.url || `https://dexscreener.com/core/${token.address}`,
+              updatedAt: Date.now()
+            }
+          };
+        } catch (err) {
+          console.error(`Error fetching ${token.symbol} data:`, err);
+          return {
+            symbol: token.symbol,
+            data: tokensData[token.symbol] || {
+              rank: index + 1,
+              symbol: token.symbol,
+              name: token.name,
+              price: '0.00',
+              priceChange: 0,
+              logoUrl: token.logoUrl,
+              poolUrl: `https://dexscreener.com/core/${token.address}`
+            }
+          };
+        }
+      });
+
+      const results = await Promise.all(tokenPromises);
+      results.forEach(result => {
+        updatedTokens[result.symbol] = result.data;
+      });
+
+      setTokensData(updatedTokens);
+      setLastUpdate(updateTime);
+      localStorage.setItem('tokensData', JSON.stringify({
+        data: updatedTokens,
+        lastUpdate: updateTime
       }));
       
     } catch (err) {
       console.error('Error updating token prices:', err);
       setError('Error al actualizar precios. Usando datos cacheados...');
       
-      // Intentar cargar datos cacheados
-      const cachedData = localStorage.getItem('coreTokensData');
+      const cachedData = localStorage.getItem('tokensData');
       if (cachedData) {
         const parsedData = JSON.parse(cachedData);
         setTokensData(parsedData.data);
@@ -179,8 +274,7 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   useEffect(() => {
-    // Cargar datos cacheados al inicio
-    const cachedData = localStorage.getItem('coreTokensData');
+    const cachedData = localStorage.getItem('tokensData');
     if (cachedData) {
       const parsedData = JSON.parse(cachedData);
       setTokensData(parsedData.data);
@@ -189,11 +283,46 @@ const Header: React.FC<HeaderProps> = ({
 
     updateTokenPrices();
     
-    // Actualizar cada 30 segundos
-    const interval = setInterval(updateTokenPrices, 30000);
-    
-    return () => clearInterval(interval);
+    const intervals = TRACKED_TOKENS.map((token, index) => {
+      return setInterval(() => {
+        updateSingleToken(token.address, token.symbol, token.specificPool || false);
+      }, 30000 + (index * 2000));
+    });
+
+    return () => intervals.forEach(interval => clearInterval(interval));
   }, []);
+
+  const updateSingleToken = async (address: string, symbol: string, isSpecificPool: boolean) => {
+    try {
+      const data = await fetchTokenData(address, isSpecificPool);
+      
+      let pairData;
+      if (isSpecificPool) {
+        pairData = data.pair || {};
+      } else {
+        const sortedPairs = data.pairs?.sort((a: any, b: any) => 
+          (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0)
+        );
+        pairData = sortedPairs?.[0] || {};
+      }
+      
+      setTokensData(prev => ({
+        ...prev,
+        [symbol]: {
+          ...prev[symbol],
+          price: formatPrice(pairData.priceUsd || 0),
+          priceChange: pairData.priceChange?.h24 || 0,
+          volume24h: pairData.volume?.h24 || 0,
+          liquidity: pairData.liquidity?.usd || 0,
+          updatedAt: Date.now()
+        }
+      }));
+      
+      setLastUpdate(new Date().toLocaleTimeString());
+    } catch (err) {
+      console.error(`Error updating ${symbol} price:`, err);
+    }
+  };
 
   const handleWalletSelect = async (walletId: string) => {
     try {
@@ -204,7 +333,21 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  const displayedTokens = tokensData.slice(0, 15);
+  const prices = [
+    ...TRACKED_TOKENS.map((token) => {
+      const tokenData = tokensData[token.symbol] || {
+        rank: token.rank,
+        symbol: token.symbol,
+        name: token.name,
+        price: loading ? '...' : '0.00',
+        priceChange: 0,
+        logoUrl: token.logoUrl,
+        poolUrl: `https://dexscreener.com/core/${token.address}`
+      };
+      return tokenData;
+    }),
+    ...RANDOM_TOKENS
+  ];
 
   return (
     <>
@@ -252,7 +395,7 @@ const Header: React.FC<HeaderProps> = ({
         {/* Desktop Header */}
         <div className="hidden lg:flex items-center px-4 py-2 z-10">
           <div className="flex-1 flex items-center gap-2">
-            <span className="text-sm font-medium text-white ml-2">Core Chain Top Pools</span>
+            <span className="text-sm font-medium text-white ml-2">Live Prices</span>
             <div className="relative h-6 overflow-hidden flex-1">
               <div className="absolute inset-0 flex items-center">
                 {error ? (
@@ -260,9 +403,8 @@ const Header: React.FC<HeaderProps> = ({
                     <span>{error}</span>
                     <button 
                       onClick={updateTokenPrices}
-                      className="text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                      className="text-blue-400 hover:text-blue-300"
                     >
-                      <RefreshCw className="w-3 h-3" />
                       Retry
                     </button>
                   </div>
@@ -274,7 +416,7 @@ const Header: React.FC<HeaderProps> = ({
                 ) : (
                   <>
                     <div className="animate-ticker flex items-center whitespace-nowrap gap-4">
-                      {[...displayedTokens, ...displayedTokens].map((crypto, index) => (
+                      {[...prices, ...prices].map((crypto, index) => (
                         <div
                           key={`${crypto.symbol}-${index}`}
                           className={`flex items-center gap-1.5 text-xs ${crypto.poolUrl ? 'cursor-pointer bg-gray-800/50 backdrop-blur-sm rounded-lg hover:bg-gray-700/50 transition-colors' : 'opacity-80'}`}
@@ -314,17 +456,8 @@ const Header: React.FC<HeaderProps> = ({
                         </div>
                       ))}
                     </div>
-                    <div className="ml-4 flex items-center gap-2">
-                      <span className="text-xs text-gray-400">
-                        Updated: {lastUpdate}
-                      </span>
-                      <button 
-                        onClick={updateTokenPrices}
-                        className="text-gray-400 hover:text-gray-300 transition-colors"
-                        title="Refresh prices"
-                      >
-                        <RefreshCw className="w-3 h-3" />
-                      </button>
+                    <div className="ml-4 text-xs text-gray-400">
+                      Updated: {lastUpdate}
                     </div>
                   </>
                 )}
