@@ -24,126 +24,29 @@ interface TokenData {
   logoUrl?: string;
   poolUrl?: string;
   updatedAt?: number;
+  address?: string;
 }
 
-// Lista completa de tokens a rastrear (principales)
-const TRACKED_TOKENS = [
-  {
-    address: "0x5ebae3a840ff34b107d637c8ed07c3d1d2017178", // WCORE (pool específico)
-    symbol: "CORE",
-    name: "Wrapped CORE",
-    logoUrl: "https://pipiswap.finance/images/tokens/0x40375c92d9faf44d2f9db9bd9ba41a3317a2404f.png",
-    specificPool: true
-  },
+// Tokens prioritarios que deben mantenerse en top
+const PRIORITY_TOKENS = [
   {
     address: "0x892CCdD2624ef09Ca5814661c566316253353820", // BUGS
     symbol: "BUGS",
     name: "Bugs Bunny",
-    logoUrl: "https://swap.falcox.net/images/tokens/0x892CCdD2624ef09Ca5814661c566316253353820.png"
-  },
-  {
-    address: "0x3034802fc4c9a278d0886ed77fd3f79fd789c898", // PIPI
-    symbol: "PIPI",
-    name: "PIPILOL",
-    logoUrl: "https://bnb.pipiswap.finance/images/tokens/0xf86e639ff387b6064607201a7a98f2c2b2feb05f.png"
+    logoUrl: "https://swap.falcox.net/images/tokens/0x892CCdD2624ef09Ca5814661c566316253353820.png",
+    priorityRank: 1
   },
   {
     address: "0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE", // SC
     symbol: "SC",
     name: "Strat Core",
-    logoUrl: "https://photos.pinksale.finance/file/pinksale-logo-upload/1742349083597-5992f1e2232da2a5d4bde148da95a95f.png"
-  },
-  {
-    address: "0xc5555ea27e63cd89f8b227dece2a3916800c0f4f", // DC
-    symbol: "DC",
-    name: "Dual CORE",
-    logoUrl: "https://photos.pinksale.finance/file/pinksale-logo-upload/1752125351861-d77af108bfaad0821f81463c3e24af21.png"
+    logoUrl: "https://photos.pinksale.finance/file/pinksale-logo-upload/1742349083597-5992f1e2232da2a5d4bde148da95a95f.png",
+    priorityRank: 2
   }
 ];
 
-// Tokens aleatorios para completar (con logos verificados)
-const RANDOM_TOKENS = [
-  { 
-    rank: 6, 
-    symbol: 'SHIB', 
-    name: 'Shiba Inu', 
-    price: '0.000024', 
-    priceChange: 1.2, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/11939/large/shiba.png?1696511800' 
-  },
-  { 
-    rank: 7, 
-    symbol: 'DOGE', 
-    name: 'Dogecoin', 
-    price: '0.12', 
-    priceChange: -0.5, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/5/large/dogecoin.png?1696501409' 
-  },
-  { 
-    rank: 8, 
-    symbol: 'PEPE', 
-    name: 'Pepe', 
-    price: '0.0000012', 
-    priceChange: 5.7, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/29850/large/pepe-token.jpeg?1696528776' 
-  },
-  { 
-    rank: 9, 
-    symbol: 'FLOKI', 
-    name: 'Floki Inu', 
-    price: '0.00018', 
-    priceChange: 2.3, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/16746/large/PNG_image.png?1696516318' 
-  },
-  { 
-    rank: 10, 
-    symbol: 'BONK', 
-    name: 'Bonk', 
-    price: '0.000023', 
-    priceChange: -1.8, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/28600/large/bonk.jpg?1696527587' 
-  },
-  { 
-    rank: 11, 
-    symbol: 'LTC', 
-    name: 'Litecoin', 
-    price: '72.34', 
-    priceChange: 0.8, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/2/large/litecoin.png?1696501400' 
-  },
-  { 
-    rank: 12, 
-    symbol: 'XRP', 
-    name: 'Ripple', 
-    price: '0.52', 
-    priceChange: -0.3, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png?1696501442' 
-  },
-  { 
-    rank: 13, 
-    symbol: 'SOL', 
-    name: 'Solana', 
-    price: '145.67', 
-    priceChange: 3.2, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/4128/large/solana.png?1696504756' 
-  },
-  { 
-    rank: 14, 
-    symbol: 'ADA', 
-    name: 'Cardano', 
-    price: '0.45', 
-    priceChange: -1.1, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/975/large/cardano.png?1696502090' 
-  },
-  { 
-    rank: 15, 
-    symbol: 'AVAX', 
-    name: 'Avalanche', 
-    price: '35.21', 
-    priceChange: 2.5, 
-    logoUrl: 'https://assets.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png?1696512369' 
-  }
-];
+// API de GeckoTerminal para tendencias de CORE
+const GECKO_TRENDING_API = "https://api.geckoterminal.com/api/v2/networks/core/trending_pools";
 
 const Header: React.FC<HeaderProps> = ({
   web3Service,
@@ -155,6 +58,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [tokensData, setTokensData] = useState<Record<string, TokenData>>({});
+  const [trendingTokens, setTrendingTokens] = useState<TokenData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<string>('');
@@ -171,24 +75,76 @@ const Header: React.FC<HeaderProps> = ({
     return numPrice.toFixed(4).replace(/\.?0+$/, '');
   };
 
-  const fetchTokenData = async (tokenAddress: string, isSpecificPool = false, retries = 3): Promise<any> => {
+  // Fetch datos de tokens prioritarios desde DexScreener
+  const fetchPriorityTokenData = async (tokenAddress: string, symbol: string, name: string, logoUrl: string): Promise<TokenData> => {
     try {
-      let url;
-      if (isSpecificPool) {
-        url = `https://api.dexscreener.com/latest/dex/pairs/core/${tokenAddress}`;
-      } else {
-        url = `https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`;
-      }
-      
-      const response = await fetch(url);
+      const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${tokenAddress}`);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.json();
+      
+      const data = await response.json();
+      const sortedPairs = data.pairs?.sort((a: any, b: any) => 
+        (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0)
+      );
+      const pairData = sortedPairs?.[0] || {};
+      
+      return {
+        rank: symbol === 'BUGS' ? 1 : 2,
+        symbol,
+        name,
+        price: formatPrice(pairData.priceUsd || 0),
+        priceChange: pairData.priceChange?.h24 || 0,
+        volume24h: pairData.volume?.h24 || 0,
+        liquidity: pairData.liquidity?.usd || 0,
+        logoUrl,
+        poolUrl: pairData.url || `https://dexscreener.com/core/${tokenAddress}`,
+        updatedAt: Date.now(),
+        address: tokenAddress
+      };
     } catch (err) {
-      if (retries > 0) {
-        await new Promise(resolve => setTimeout(resolve, 1000 * (4 - retries)));
-        return fetchTokenData(tokenAddress, isSpecificPool, retries - 1);
-      }
-      throw err;
+      console.error(`Error fetching ${symbol} data:`, err);
+      return {
+        rank: symbol === 'BUGS' ? 1 : 2,
+        symbol,
+        name,
+        price: '0.00',
+        priceChange: 0,
+        logoUrl,
+        poolUrl: `https://dexscreener.com/core/${tokenAddress}`,
+        address: tokenAddress
+      };
+    }
+  };
+
+  // Fetch tendencias de GeckoTerminal
+  const fetchGeckoTrending = async (): Promise<TokenData[]> => {
+    try {
+      const response = await fetch(GECKO_TRENDING_API);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const data = await response.json();
+      const pools = data.data || [];
+      
+      return pools.slice(0, 10).map((pool: any, index: number) => {
+        const attributes = pool.attributes;
+        const baseToken = attributes.base_token;
+        
+        return {
+          rank: index + 3, // Empezar desde rank 3 porque 1 y 2 son para BUGS y SC
+          symbol: baseToken.symbol,
+          name: baseToken.name,
+          price: formatPrice(attributes.price_usd),
+          priceChange: attributes.price_change_percentage?.h24 || 0,
+          volume24h: attributes.volume_usd?.h24 || 0,
+          liquidity: attributes.reserve_in_usd || 0,
+          logoUrl: baseToken.image_url,
+          poolUrl: `https://www.geckoterminal.com/es/core/pools/${pool.id}`,
+          updatedAt: Date.now(),
+          address: baseToken.address
+        };
+      });
+    } catch (err) {
+      console.error('Error fetching GeckoTerminal trending:', err);
+      return [];
     }
   };
 
@@ -197,64 +153,33 @@ const Header: React.FC<HeaderProps> = ({
       setLoading(true);
       setError(null);
       
-      const updatedTokens: Record<string, TokenData> = {};
       const updateTime = new Date().toLocaleTimeString();
       
-      const tokenPromises = TRACKED_TOKENS.map(async (token, index) => {
-        try {
-          const data = await fetchTokenData(token.address, token.specificPool);
-          
-          let pairData;
-          if (token.specificPool) {
-            pairData = data.pair || {};
-          } else {
-            const sortedPairs = data.pairs?.sort((a: any, b: any) => 
-              (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0)
-            );
-            pairData = sortedPairs?.[0] || {};
-          }
-          
-          return {
-            symbol: token.symbol,
-            data: {
-              rank: index + 1,
-              symbol: token.symbol,
-              name: token.name,
-              price: formatPrice(pairData.priceUsd || 0),
-              priceChange: pairData.priceChange?.h24 || 0,
-              volume24h: pairData.volume?.h24 || 0,
-              liquidity: pairData.liquidity?.usd || 0,
-              logoUrl: token.logoUrl,
-              poolUrl: pairData.url || `https://dexscreener.com/core/${token.address}`,
-              updatedAt: Date.now()
-            }
-          };
-        } catch (err) {
-          console.error(`Error fetching ${token.symbol} data:`, err);
-          return {
-            symbol: token.symbol,
-            data: tokensData[token.symbol] || {
-              rank: index + 1,
-              symbol: token.symbol,
-              name: token.name,
-              price: '0.00',
-              priceChange: 0,
-              logoUrl: token.logoUrl,
-              poolUrl: `https://dexscreener.com/core/${token.address}`
-            }
-          };
-        }
+      // Fetch datos de tokens prioritarios
+      const priorityPromises = PRIORITY_TOKENS.map(token => 
+        fetchPriorityTokenData(token.address, token.symbol, token.name, token.logoUrl)
+      );
+      
+      const priorityResults = await Promise.all(priorityPromises);
+      
+      // Fetch tendencias de GeckoTerminal
+      const geckoTrending = await fetchGeckoTrending();
+      
+      // Combinar datos: primero tokens prioritarios, luego tendencias
+      const allTokens = [...priorityResults, ...geckoTrending];
+      
+      const tokensMap: Record<string, TokenData> = {};
+      allTokens.forEach(token => {
+        tokensMap[token.symbol] = token;
       });
-
-      const results = await Promise.all(tokenPromises);
-      results.forEach(result => {
-        updatedTokens[result.symbol] = result.data;
-      });
-
-      setTokensData(updatedTokens);
+      
+      setTokensData(tokensMap);
+      setTrendingTokens(allTokens);
       setLastUpdate(updateTime);
+      
       localStorage.setItem('tokensData', JSON.stringify({
-        data: updatedTokens,
+        data: tokensMap,
+        trending: allTokens,
         lastUpdate: updateTime
       }));
       
@@ -266,6 +191,7 @@ const Header: React.FC<HeaderProps> = ({
       if (cachedData) {
         const parsedData = JSON.parse(cachedData);
         setTokensData(parsedData.data);
+        setTrendingTokens(parsedData.trending || []);
         setLastUpdate(parsedData.lastUpdate);
       }
     } finally {
@@ -278,51 +204,16 @@ const Header: React.FC<HeaderProps> = ({
     if (cachedData) {
       const parsedData = JSON.parse(cachedData);
       setTokensData(parsedData.data);
+      setTrendingTokens(parsedData.trending || []);
       setLastUpdate(parsedData.lastUpdate);
     }
 
     updateTokenPrices();
     
-    const intervals = TRACKED_TOKENS.map((token, index) => {
-      return setInterval(() => {
-        updateSingleToken(token.address, token.symbol, token.specificPool || false);
-      }, 30000 + (index * 2000));
-    });
+    const interval = setInterval(updateTokenPrices, 60000); // Actualizar cada minuto
 
-    return () => intervals.forEach(interval => clearInterval(interval));
+    return () => clearInterval(interval);
   }, []);
-
-  const updateSingleToken = async (address: string, symbol: string, isSpecificPool: boolean) => {
-    try {
-      const data = await fetchTokenData(address, isSpecificPool);
-      
-      let pairData;
-      if (isSpecificPool) {
-        pairData = data.pair || {};
-      } else {
-        const sortedPairs = data.pairs?.sort((a: any, b: any) => 
-          (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0)
-        );
-        pairData = sortedPairs?.[0] || {};
-      }
-      
-      setTokensData(prev => ({
-        ...prev,
-        [symbol]: {
-          ...prev[symbol],
-          price: formatPrice(pairData.priceUsd || 0),
-          priceChange: pairData.priceChange?.h24 || 0,
-          volume24h: pairData.volume?.h24 || 0,
-          liquidity: pairData.liquidity?.usd || 0,
-          updatedAt: Date.now()
-        }
-      }));
-      
-      setLastUpdate(new Date().toLocaleTimeString());
-    } catch (err) {
-      console.error(`Error updating ${symbol} price:`, err);
-    }
-  };
 
   const handleWalletSelect = async (walletId: string) => {
     try {
@@ -333,21 +224,19 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  const prices = [
-    ...TRACKED_TOKENS.map((token) => {
-      const tokenData = tokensData[token.symbol] || {
-        rank: token.rank,
+  // Preparar datos para mostrar
+  const prices = trendingTokens.length > 0 
+    ? trendingTokens 
+    : PRIORITY_TOKENS.map((token, index) => ({
+        rank: index + 1,
         symbol: token.symbol,
         name: token.name,
         price: loading ? '...' : '0.00',
         priceChange: 0,
         logoUrl: token.logoUrl,
-        poolUrl: `https://dexscreener.com/core/${token.address}`
-      };
-      return tokenData;
-    }),
-    ...RANDOM_TOKENS
-  ];
+        poolUrl: `https://dexscreener.com/core/${token.address}`,
+        address: token.address
+      }));
 
   return (
     <>
@@ -418,7 +307,7 @@ const Header: React.FC<HeaderProps> = ({
                     <div className="animate-ticker flex items-center whitespace-nowrap gap-4">
                       {[...prices, ...prices].map((crypto, index) => (
                         <div
-                          key={`${crypto.symbol}-${index}`}
+                          key={`${crypto.symbol}-${index}-${crypto.rank}`}
                           className={`flex items-center gap-1.5 text-xs ${crypto.poolUrl ? 'cursor-pointer bg-gray-800/50 backdrop-blur-sm rounded-lg hover:bg-gray-700/50 transition-colors' : 'opacity-80'}`}
                           onClick={() => crypto.poolUrl && window.open(crypto.poolUrl, '_blank')}
                         >
