@@ -29,11 +29,10 @@ interface TokenData {
 // Lista completa de tokens a rastrear (principales)
 const TRACKED_TOKENS = [
   {
-    address: "0x5ebae3a840ff34b107d637c8ed07c3d1d2017178", // WCORE (pool específico)
-    symbol: "CORE",
+    address: "0x40375C92d9FAf44d2f9db9Bd9ba41a3317a2404f", // WCORE
+    symbol: "WCORE",
     name: "Wrapped CORE",
-    logoUrl: "https://pipiswap.finance/images/tokens/0x40375c92d9faf44d2f9db9bd9ba41a3317a2404f.png",
-    specificPool: true
+    logoUrl: "https://pipiswap.finance/images/tokens/0x40375c92d9faf44d2f9db9bd9ba41a3317a2404f.png"
   },
   {
     address: "0x892CCdD2624ef09Ca5814661c566316253353820", // BUGS
@@ -42,22 +41,52 @@ const TRACKED_TOKENS = [
     logoUrl: "https://swap.falcox.net/images/tokens/0x892CCdD2624ef09Ca5814661c566316253353820.png"
   },
   {
-    address: "0x3034802fc4c9a278d0886ed77fd3f79fd789c898", // PIPI
-    symbol: "PIPI",
-    name: "PIPILOL",
-    logoUrl: "https://bnb.pipiswap.finance/images/tokens/0xf86e639ff387b6064607201a7a98f2c2b2feb05f.png"
+    address: "0x900101d06a7426441ae63e9ab3b9b0f63be145f1", // USDT
+    symbol: "USDT",
+    name: "Tether USD",
+    logoUrl: "https://pipiswap.finance/images/tokens/0x900101d06a7426441ae63e9ab3b9b0f63be145f1.png"
   },
   {
     address: "0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE", // SC
     symbol: "SC",
     name: "Strat Core",
-    logoUrl: "https://photos.pinksale.finance/file/pinksale-logo-upload/1742349083597-5992f1e2232da2a5d4bde148da95a95f.png"
+    logoUrl: "https://swap.falcox.net/images/tokens/0x735C632F2e4e0D9E924C9b0051EC0c10BCeb6eAE.png"
   },
   {
-    address: "0xc5555ea27e63cd89f8b227dece2a3916800c0f4f", // DC
-    symbol: "DC",
-    name: "Dual CORE",
-    logoUrl: "https://photos.pinksale.finance/file/pinksale-logo-upload/1752125351861-d77af108bfaad0821f81463c3e24af21.png"
+    address: "0x2170Ed0880ac9A755fd29B2688956BD959F933F8", // ETH
+    symbol: "ETH",
+    name: "Ethereum",
+    logoUrl: "https://assets.coingecko.com/coins/images/279/large/ethereum.png"
+  },
+  {
+    address: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", // WBTC
+    symbol: "WBTC",
+    name: "Wrapped Bitcoin",
+    logoUrl: "https://assets.coingecko.com/coins/images/7598/large/wrapped_bitcoin_wbtc.png"
+  },
+  {
+    address: "0x55d398326f99059fF775485246999027B3197955", // USDT BSC
+    symbol: "USDT",
+    name: "Tether USD BSC",
+    logoUrl: "https://assets.coingecko.com/coins/images/325/large/Tether.png"
+  },
+  {
+    address: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56", // BUSD
+    symbol: "BUSD",
+    name: "Binance USD",
+    logoUrl: "https://assets.coingecko.com/coins/images/9576/large/BUSD.png"
+  },
+  {
+    address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d", // USDC
+    symbol: "USDC",
+    name: "USD Coin",
+    logoUrl: "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png"
+  },
+  {
+    address: "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3", // DAI
+    symbol: "DAI",
+    name: "Dai Stablecoin",
+    logoUrl: "https://assets.coingecko.com/coins/images/9956/large/Badge_Dai.png"
   }
 ];
 
@@ -351,158 +380,4 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <div className="flex flex-col bg-gray-900/30 backdrop-blur-sm border-b border-gray-800 !z-10">
-        {/* Mobile Header */}
-        <div className="lg:hidden flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3">
-          <button
-            onClick={onMenuClick}
-            className="p-1 sm:p-1.5 hover:bg-gray-800/50 rounded-lg transition-colors"
-            aria-label="Open menu"
-          >
-            <Menu className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-          </button>
-
-          <div className="flex items-center gap-1 sm:gap-2 z-50">
-            {isConnected ? (
-              <div className="flex items-center gap-1 sm:gap-1.5">
-                <div className="bg-gray-900/50 backdrop-blur-sm rounded-full px-1.5 sm:px-2 py-0.5 sm:py-1 border border-gray-800">
-                  <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-[10px] sm:text-xs font-medium text-white truncate max-w-[60px] sm:max-w-[100px]">
-                    {`${address.substring(0, 4)}...${address.substring(address.length - 4)}`}
-                  </span>
-                  </div>
-                </div>
-                <button
-                  onClick={onDisconnect}
-                  className="bg-red-500 text-white px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-lg hover:bg-red-600 transition-all duration-300"
-                >
-                  Disconnect
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsWalletModalOpen(true)}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs rounded-lg transition-all duration-300"
-              >
-                Connect
-              </button>
-            )}
-            <LanguageSelector />
-          </div>
-        </div>
-
-        {/* Desktop Header */}
-        <div className="hidden lg:flex items-center px-4 py-2 z-10">
-          <div className="flex-1 flex items-center gap-2">
-            <span className="text-sm font-medium text-white ml-2">Live Prices</span>
-            <div className="relative h-6 overflow-hidden flex-1">
-              <div className="absolute inset-0 flex items-center">
-                {error ? (
-                  <div className="flex items-center text-xs text-red-400 gap-2">
-                    <span>{error}</span>
-                    <button 
-                      onClick={updateTokenPrices}
-                      className="text-blue-400 hover:text-blue-300"
-                    >
-                      Retry
-                    </button>
-                  </div>
-                ) : loading ? (
-                  <div className="flex items-center justify-center w-full">
-                    <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
-                    <span className="ml-2 text-xs text-gray-400">Loading prices...</span>
-                  </div>
-                ) : (
-                  <>
-                    <div className="animate-ticker flex items-center whitespace-nowrap gap-4">
-                      {[...prices, ...prices].map((crypto, index) => (
-                        <div
-                          key={`${crypto.symbol}-${index}`}
-                          className={`flex items-center gap-1.5 text-xs ${crypto.poolUrl ? 'cursor-pointer bg-gray-800/50 backdrop-blur-sm rounded-lg hover:bg-gray-700/50 transition-colors' : 'opacity-80'}`}
-                          onClick={() => crypto.poolUrl && window.open(crypto.poolUrl, '_blank')}
-                        >
-                          <div className="flex items-center gap-1.5 px-2 py-1">
-                            <span className="text-gray-400">#{crypto.rank}</span>
-                            {crypto.logoUrl && (
-                              <img
-                                src={crypto.logoUrl}
-                                alt={crypto.symbol}
-                                className="w-4 h-4 rounded-full object-contain"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/16';
-                                }}
-                              />
-                            )}
-                            <span className={`font-medium ${crypto.poolUrl ? 'text-blue-400' : 'text-gray-300'}`}>
-                              {crypto.symbol}
-                            </span>
-                            <span className="text-gray-300">${crypto.price}</span>
-                            <div className={`flex items-center gap-0.5 ${crypto.priceChange >= 0
-                              ? 'text-green-400'
-                              : 'text-red-400'
-                              }`}
-                            >
-                              {crypto.priceChange >= 0 ? (
-                                <TrendingUp className="w-3 h-3" />
-                              ) : (
-                                <TrendingDown className="w-3 h-3" />
-                              )}
-                              <span className="font-medium">
-                                {Math.abs(crypto.priceChange).toFixed(2)}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="ml-4 text-xs text-gray-400">
-                      Updated: {lastUpdate}
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {isConnected ? (
-              <div className="flex items-center gap-1.5">
-                <div className="bg-gray-900/50 backdrop-blur-sm rounded-full px-3 py-1.5 border border-gray-800">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-white truncate max-w-[120px]">
-                    {`${address.substring(0, 6)}...${address.substring(address.length - 4)}`}
-                  </span>
-                  </div>
-                </div>
-                <button
-                  onClick={onDisconnect}
-                  className="bg-red-500 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-red-600 transition-all duration-300"
-                >
-                  Disconnect
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setIsWalletModalOpen(true)}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1.5 text-sm rounded-lg transition-all duration-300"
-              >
-                Connect Wallet
-              </button>
-            )}
-            <LanguageSelector />
-          </div>
-        </div>
-      </div>
-
-      <WalletModal
-        isOpen={isWalletModalOpen}
-        onClose={() => setIsWalletModalOpen(false)}
-        onSelectWallet={handleWalletSelect}
-      />
-    </>
-  );
-};
-
-export default Header;
+      <div className="flex flex
