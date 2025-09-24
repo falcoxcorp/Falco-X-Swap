@@ -152,7 +152,7 @@ const Footer: React.FC = () => {
             </p>
           </div>
         </div>
-        </div>
+      </footer>
 
         {/* Terms Modal */}
         {showTermsModal && hasAcceptedTerms && (
