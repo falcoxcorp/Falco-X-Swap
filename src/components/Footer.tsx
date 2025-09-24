@@ -47,6 +47,7 @@ const Footer: React.FC = () => {
 
   return (
     <>
+    <>
       <footer className="bg-gray-950/95 backdrop-blur-md border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
@@ -154,67 +155,67 @@ const Footer: React.FC = () => {
         </div>
       </footer>
 
-        {/* Terms Modal */}
-        {showTermsModal && hasAcceptedTerms && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div 
-              ref={modalRef}
-              className="bg-gray-900 rounded-xl w-full max-w-4xl h-[90vh] flex flex-col border border-gray-800 shadow-2xl"
-            >
-              {/* Modal Header */}
-              <div className="p-6 border-b border-gray-800 flex justify-between items-center bg-gray-900 sticky top-0 z-10">
-                <h2 className="text-xl font-bold text-white">
-                  Terms of Use and Conditions
-                </h2>
-                <button 
-                  onClick={() => setShowTermsModal(false)}
-                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-                >
-                  <X className="w-5 h-5 text-gray-400 hover:text-white" />
-                </button>
-              </div>
+      {/* Terms Modal */}
+      {showTermsModal && hasAcceptedTerms && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div 
+            ref={modalRef}
+            className="bg-gray-900 rounded-xl w-full max-w-4xl h-[90vh] flex flex-col border border-gray-800 shadow-2xl"
+          >
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-800 flex justify-between items-center bg-gray-900 sticky top-0 z-10">
+              <h2 className="text-xl font-bold text-white">
+                Terms of Use and Conditions
+              </h2>
+              <button 
+                onClick={() => setShowTermsModal(false)}
+                className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-400 hover:text-white" />
+              </button>
+            </div>
 
-              {/* Modal Content */}
-              <div className="flex-1 overflow-y-auto">
-                <div className="p-6 space-y-8">
-                  {termsData.sections.map((section, index) => (
-                    <div 
-                      key={index} 
-                      className="space-y-3"
-                    >
-                      <h3 className="text-lg font-semibold text-blue-400">
-                        {section.title}
-                      </h3>
-                      {section.content.split('\n').map((paragraph, pIndex) => (
-                        <p 
-                          key={pIndex} 
-                          className="text-gray-300 leading-relaxed"
-                          style={{ fontSize: '15px' }}
-                        >
-                          {paragraph.startsWith('-') ? (
-                            <span className="block pl-4">• {paragraph.substring(2)}</span>
-                          ) : (
-                            paragraph
-                          )}
-                        </p>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Modal Footer */}
-              <div className="p-6 border-t border-gray-800 bg-gray-900 sticky bottom-0">
-                <button
-                  onClick={() => setShowTermsModal(false)}
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 font-medium"
-                >
-                  Close
-                </button>
+            {/* Modal Content */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-6 space-y-8">
+                {termsData.sections.map((section, index) => (
+                  <div 
+                    key={index} 
+                    className="space-y-3"
+                  >
+                    <h3 className="text-lg font-semibold text-blue-400">
+                      {section.title}
+                    </h3>
+                    {section.content.split('\n').map((paragraph, pIndex) => (
+                      <p 
+                        key={pIndex} 
+                        className="text-gray-300 leading-relaxed"
+                        style={{ fontSize: '15px' }}
+                      >
+                        {paragraph.startsWith('-') ? (
+                          <span className="block pl-4">• {paragraph.substring(2)}</span>
+                        ) : (
+                          paragraph
+                        )}
+                      </p>
+                    ))}
+                  </div>
+                ))}
               </div>
             </div>
+
+            {/* Modal Footer */}
+            <div className="p-6 border-t border-gray-800 bg-gray-900 sticky bottom-0">
+              <button
+                onClick={() => setShowTermsModal(false)}
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-300 font-medium"
+              >
+                Close
+              </button>
+            </div>
           </div>
-        )}
+        </div>
+      )}
       </footer>
 
       {/* Documentation Modal */}
@@ -222,6 +223,7 @@ const Footer: React.FC = () => {
         isOpen={showDocumentation}
         onClose={() => setShowDocumentation(false)}
       />
+    </>
     </>
   );
 };
