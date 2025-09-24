@@ -105,19 +105,19 @@ const Footer: React.FC = () => {
       external: true
     },
     {
-      name: 'Audit Reports',
-      href: '#',
-      external: false
+      name: 'Trading Guide',
+      href: 'https://falcox.gitbook.io/falcox/trading-guide',
+      external: true
     },
     {
-      name: 'Bug Bounty',
-      href: '#',
-      external: false
+      name: 'Token Creation',
+      href: 'https://createtokens.falcox.net/',
+      external: true
     },
     {
-      name: 'API Documentation',
-      href: '#',
-      external: false
+      name: 'Community Hub',
+      href: 'https://social.falcox.net/',
+      external: true
     }
   ];
 
