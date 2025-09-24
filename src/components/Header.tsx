@@ -380,4 +380,6 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <div className="flex flex
+      <div className="flex flex-col">
+        {/* Header content will go here */}
+      </div>
