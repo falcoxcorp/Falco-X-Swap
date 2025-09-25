@@ -66,7 +66,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
   // Función para agregar token a MetaMask con imagen
   const addTokenToMetaMask = async (tokenSymbol: string) => {
     const token = TOKENS[tokenSymbol];
-    if (!token || !window.ethereum || token.address === ethers.ZeroAddress || !token.address) {
+    if (!token || !window.ethereum || token.address === ethers.ZeroAddress) {
       console.log('Token not valid for MetaMask:', { token, hasEthereum: !!window.ethereum });
       return;
     }

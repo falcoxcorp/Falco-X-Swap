@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Twitter, MessageCircle, Mail, X, BookOpen, ExternalLink, Shield, FileText, Globe, Users, Building2, MapPin, Phone, Plus } from 'lucide-react';
+import { Twitter, MessageCircle, Mail, X, BookOpen, ExternalLink, Shield, FileText, Globe, Users, Building2, MapPin, Phone } from 'lucide-react';
 import { FaDiscord } from 'react-icons/fa';
 import termsData from './TermsModal.json';
 import Documentation from './Documentation';
@@ -10,19 +10,6 @@ const Footer: React.FC = () => {
   const [showDocumentation, setShowDocumentation] = useState(false);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
-
-  // Core Network configuration
-  const CORE_NETWORK = {
-    chainId: '0x45C', // 1116 in hexadecimal
-    chainName: 'Core Blockchain Mainnet',
-    nativeCurrency: {
-      name: 'CORE',
-      symbol: 'CORE',
-      decimals: 18
-    },
-    rpcUrls: ['https://rpc.coredao.org'],
-    blockExplorerUrls: ['https://scan.coredao.org']
-  };
 
   useEffect(() => {
     const accepted = localStorage.getItem('falcox_terms_accepted');
@@ -62,27 +49,6 @@ const Footer: React.FC = () => {
 
   const handleDocumentationClick = () => {
     setShowDocumentation(true);
-  };
-
-  const addCoreNetworkToMetaMask = async () => {
-    if (!window.ethereum) {
-      alert('MetaMask is not installed. Please install MetaMask to add the Core network.');
-      return;
-    }
-
-    try {
-      await window.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [CORE_NETWORK]
-      });
-    } catch (error: any) {
-      console.error('Error adding Core network to MetaMask:', error);
-      if (error.code === 4001) {
-        // User rejected the request
-        return;
-      }
-      alert('Failed to add Core network to MetaMask. Please try again.');
-    }
   };
 
   const currentYear = new Date().getFullYear();
@@ -187,18 +153,6 @@ const Footer: React.FC = () => {
             {/* Quick Links */}
             <div className="space-y-4">
               <h4 className="text-sm font-semibold text-white uppercase tracking-wider">Resources</h4>
-              
-              {/* Add Core Network Button */}
-              <div className="mb-4">
-                <button
-                  onClick={addCoreNetworkToMetaMask}
-                  className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 text-sm font-medium shadow-lg"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Add Core Network to MetaMask</span>
-                </button>
-              </div>
-              
               <ul className="space-y-2">
                 {quickLinks.map((link, index) => (
                   <li key={index}>
