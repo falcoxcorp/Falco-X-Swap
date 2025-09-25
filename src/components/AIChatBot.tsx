@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Maximize2, Minimize2, Bot, Sparkles } from 'lucide-react';
 import { TOKENS } from '../config/tokens';
-import Particles from '@tsparticles/react';
-import { loadFull } from '@tsparticles/all';
-import type { Engine } from '@tsparticles/engine';
+import Particles from 'react-tsparticles';
+import { loadFull } from 'tsparticles';
+import type { Engine } from 'tsparticles-engine';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Configuración de partículas
