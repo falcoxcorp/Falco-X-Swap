@@ -71,17 +71,96 @@ const Footer: React.FC = () => {
     }
 
     try {
+      // First, try to switch to the network if it already exists
       await window.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [CORE_NETWORK]
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: CORE_NETWORK.chainId }],
       });
+      
+      // If switch succeeds, the network already exists
+      console.log('Successfully switched to Core network');
+      
     } catch (error: any) {
       console.error('Error adding Core network to MetaMask:', error);
-      if (error.code === 4001) {
-        // User rejected the request
+      
+      // If error code 4902, the network doesn't exist, so add it
+      if (error.code === 4902) {
+        try {
+          // Check if user already has Core network with different symbol
+          const networks = await window.ethereum.request({
+            method: 'wallet_getPermissions'
+          }).catch(() => null);
+          
+          // Try adding with the standard Core network configuration
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: CORE_NETWORK.chainId,
+              chainName: CORE_NETWORK.chainName,
+              nativeCurrency: {
+                name: 'Core',
+                symbol: 'CORE',
+                decimals: 18
+              },
+              rpcUrls: CORE_NETWORK.rpcUrls,
+              blockExplorerUrls: CORE_NETWORK.blockExplorerUrls
+            }]
+          });
+          
+          console.log('Successfully added Core network to MetaMask');
+          
+        } catch (addError: any) {
+          console.error('Error in second attempt:', addError);
+          
+          // If still fails due to symbol mismatch, try with alternative symbol
+          if (addError.code === -32602 && addError.message?.includes('nativeCurrency.symbol')) {
+            try {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: CORE_NETWORK.chainId,
+                  chainName: 'Core Blockchain Mainnet',
+                  nativeCurrency: {
+                    name: 'Core Token',
+                    symbol: 'CORE',
+                    decimals: 18
+                  },
+                  rpcUrls: ['https://rpc.coredao.org'],
+                  blockExplorerUrls: ['https://scan.coredao.org']
+                }]
+              });
+              
+              console.log('Successfully added Core network with alternative config');
+              
+            } catch (finalError: any) {
+              console.error('Final attempt failed:', finalError);
+              
+              if (finalError.code === 4001) {
+                // User rejected - this is fine, don't show error
+                console.log('User rejected adding Core network');
+                return;
+              }
+              
+              // Show user-friendly message for persistent errors
+              alert('The Core network may already be added to your MetaMask with different settings. Please check your network list or add it manually.');
+            }
+          } else if (addError.code === 4001) {
+            // User rejected the request
+            console.log('User rejected adding Core network');
+            return;
+          } else {
+            alert('Failed to add Core network to MetaMask. The network may already exist with different settings.');
+          }
+        }
+      } else if (error.code === 4001) {
+        // User rejected the switch request
+        console.log('User rejected switching to Core network');
         return;
+      } else {
+        // Other errors when trying to switch
+        console.error('Unexpected error when switching networks:', error);
+        alert('Unable to switch to Core network. Please check your MetaMask settings.');
       }
-      alert('Failed to add Core network to MetaMask. Please try again.');
     }
   };
 
