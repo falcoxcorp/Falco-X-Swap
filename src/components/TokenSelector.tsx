@@ -36,6 +36,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
   const [showRemoveOption, setShowRemoveOption] = useState(false);
   const [tokenToRemove, setTokenToRemove] = useState<string | null>(null);
   const [addingToMetaMask, setAddingToMetaMask] = useState<string | null>(null);
+  const [tokenContractData, setTokenContractData] = useState<{[key: string]: {symbol: string, decimals: number}}>({});
 
   useEffect(() => {
     if (!isOpen) {
@@ -52,6 +53,96 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
       setCustomTokens(parsedTokens);
     }
   }, []);
+
+  // Función para obtener datos reales del contrato
+  const fetchTokenContractData = async (tokenAddress: string): Promise<{symbol: string, decimals: number} | null> => {
+    if (!web3Service.provider || tokenAddress === ethers.ZeroAddress) return null;
+    
+    try {
+      const contract = new ethers.Contract(tokenAddress, [
+        'function symbol() view returns (string)',
+        'function decimals() view returns (uint8)'
+      ], web3Service.provider);
+
+      const [symbol, decimals] = await Promise.all([
+        contract.symbol().catch(() => null),
+        contract.decimals().catch(() => 18)
+      ]);
+
+      if (symbol) {
+        return { symbol, decimals };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching token contract data:', error);
+      return null;
+    }
+  };
+
+  // Función mejorada para agregar token a MetaMask
+  const addTokenToMetaMask = async (tokenSymbol: string) => {
+    const token = TOKENS[tokenSymbol];
+    if (!token || !window.ethereum || token.address === ethers.ZeroAddress) return;
+
+    setAddingToMetaMask(tokenSymbol);
+    
+    try {
+      // Primero intentar obtener datos reales del contrato
+      let contractData = tokenContractData[token.address];
+      
+      if (!contractData) {
+        contractData = await fetchTokenContractData(token.address);
+        if (contractData) {
+          setTokenContractData(prev => ({
+            ...prev,
+            [token.address]: contractData
+          }));
+        }
+      }
+
+      // Usar datos del contrato si están disponibles, sino usar datos configurados
+      const symbolToUse = contractData?.symbol || token.symbol;
+      const decimalsToUse = contractData?.decimals || token.decimals;
+
+      await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: token.address,
+            symbol: symbolToUse,
+            decimals: decimalsToUse,
+            image: token.logoUrl || DEFAULT_CUSTOM_TOKEN_LOGO,
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Error adding token to MetaMask:', error);
+      
+      // Si falla con el símbolo del contrato, intentar con el símbolo configurado
+      if (error.message?.includes('does not match the symbol in the contract')) {
+        try {
+          // Segundo intento: usar solo la dirección y dejar que MetaMask obtenga los datos
+          await window.ethereum.request({
+            method: 'wallet_watchAsset',
+            params: {
+              type: 'ERC20',
+              options: {
+                address: token.address,
+                // No enviar symbol para que MetaMask lo obtenga automáticamente
+                image: token.logoUrl || DEFAULT_CUSTOM_TOKEN_LOGO,
+              },
+            },
+          });
+        } catch (secondError) {
+          console.error('Second attempt failed:', secondError);
+          // Silenciar el error para no interrumpir la experiencia del usuario
+        }
+      }
+    } finally {
+      setAddingToMetaMask(null);
+    }
+  };
 
   const fetchTokenInfo = async (address: string) => {
     if (!web3Service.provider) return;
@@ -330,14 +421,14 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                     <div className="text-white">{symbol}</div>
                     <div className="text-xs text-gray-400">{TOKENS[symbol]?.name || symbol}</div>
                   </div>
-                  {window.ethereum && TOKENS[symbol]?.address !== ethers.ZeroAddress && (
+                  {window.ethereum && TOKENS[symbol]?.address && TOKENS[symbol]?.address !== ethers.ZeroAddress && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         addTokenToMetaMask(symbol);
                       }}
                       disabled={addingToMetaMask === symbol}
-                      className="ml-auto p-1.5 text-gray-400 hover:text-blue-400 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
+                      className="ml-auto p-1.5 text-gray-400 hover:text-blue-400 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
                       title="Add to MetaMask"
                     >
                       {addingToMetaMask === symbol ? (
