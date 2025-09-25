@@ -1,11 +1,11 @@
 import { useCallback } from "react";
-import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import type { Engine } from "tsparticles-engine";
+import Particles from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
+import type { Engine } from "@tsparticles/engine";
 
 const ParticleBackground = () => {
   const particlesInit = useCallback(async (engine: Engine) => {
-    await loadFull(engine);
+    await loadSlim(engine);
   }, []);
 
   return (
@@ -22,7 +22,7 @@ const ParticleBackground = () => {
             value: 80,
             density: {
               enable: true,
-              value_area: 800
+              area: 800
             }
           },
           color: {
@@ -66,26 +66,21 @@ const ParticleBackground = () => {
             straight: false,
             outModes: {
               default: "out"
-            },
-            attract: {
-              enable: true,
-              rotateX: 600,
-              rotateY: 1200
             }
           },
-          interactivity: {
-            detectsOn: "window",
-            events: {
-              onHover: {
-                enable: true,
-                mode: "repulse"
-              },
-              onClick: {
-                enable: true,
-                mode: "push"
-              },
-              resize: true
-            }
+        },
+        interactivity: {
+          detectsOn: "window",
+          events: {
+            onHover: {
+              enable: true,
+              mode: "repulse"
+            },
+            onClick: {
+              enable: true,
+              mode: "push"
+            },
+            resize: true
           }
         },
         detectRetina: true,

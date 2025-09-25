@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Maximize2, Minimize2, Bot, Sparkles } from 'lucide-react';
 import { TOKENS } from '../config/tokens';
-import Particles from 'react-tsparticles';
-import { loadFull } from 'tsparticles';
-import type { Engine } from 'tsparticles-engine';
+import Particles from '@tsparticles/react';
+import { loadSlim } from '@tsparticles/slim';
+import type { Engine } from '@tsparticles/engine';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Configuración de partículas
@@ -235,7 +235,7 @@ const AIChatBot: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const chatButtonRef = useRef<HTMLButtonElement>(null);
-  const particlesInit = async (engine: Engine) => await loadFull(engine);
+  const particlesInit = async (engine: Engine) => await loadSlim(engine);
 
   // Effect to detect clicks outside the chat
   useEffect(() => {
