@@ -356,10 +356,10 @@ const Header: React.FC<HeaderProps> = ({
         <div className="lg:hidden flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3">
           <button
             onClick={onMenuClick}
-            className="p-1 sm:p-1.5 hover:bg-gray-800/50 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-800/50 rounded-lg transition-colors"
             aria-label="Open menu"
           >
-            <Menu className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <Menu className="w-5 h-5 text-white" />
           </button>
 
           <div className="flex items-center gap-1 sm:gap-2 z-50">

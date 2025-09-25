@@ -3,7 +3,7 @@ import { MessageSquare, X, Send, Maximize2, Minimize2, Bot, Sparkles } from 'luc
 import { TOKENS } from '../config/tokens';
 import Particles from 'react-tsparticles';
 import { loadFull } from 'tsparticles';
-import { Engine } from 'tsparticles-engine';
+import type { Engine } from 'tsparticles-engine';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Configuración de partículas
