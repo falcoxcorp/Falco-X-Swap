@@ -239,32 +239,6 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
     }
   };
 
-  const addTokenToMetaMask = async (tokenSymbol: string) => {
-    const token = TOKENS[tokenSymbol];
-    if (!token || !window.ethereum) return;
-
-    setAddingToMetaMask(tokenSymbol);
-    
-    try {
-      await window.ethereum.request({
-        method: 'wallet_watchAsset',
-        params: {
-          type: 'ERC20',
-          options: {
-            address: token.address,
-            symbol: token.symbol,
-            decimals: token.decimals,
-            image: token.logoUrl || DEFAULT_CUSTOM_TOKEN_LOGO,
-          },
-        },
-      });
-    } catch (error) {
-      console.error('Error adding token to MetaMask:', error);
-    } finally {
-      setAddingToMetaMask(null);
-    }
-  };
-
   const allTokens = {...TOKENS};
   customTokens.forEach(token => {
     if (!allTokens[token.symbol]) {
