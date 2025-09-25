@@ -182,9 +182,9 @@ function App() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-black text-white relative">
+    <div className="flex min-h-screen bg-black text-white relative overflow-hidden">
       <ParticleBackground />
-      <div className="relative z-10 flex w-full">
+      <div className="relative z-10 flex w-full min-h-screen">
         <div className={`fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out z-30`}>
           <Sidebar 
             menuItems={menuItems} 
@@ -194,7 +194,7 @@ function App() {
           />
         </div>
 
-        <div className="flex-1 flex flex-col min-h-screen">
+        <div className="flex-1 flex flex-col min-h-screen overflow-auto">
           <Header 
             web3Service={web3Service}
             isConnected={isConnected}
@@ -203,7 +203,7 @@ function App() {
             onDisconnect={handleDisconnect}
             onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
           />
-          <main className="flex-1 overflow-auto">
+          <main className="flex-1 overflow-auto bg-black">
             <ErrorBoundary>
               {currentView === 'trade' && (
                 <Trade 

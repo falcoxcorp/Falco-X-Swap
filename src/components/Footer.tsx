@@ -192,7 +192,7 @@ const Footer: React.FC = () => {
               <div className="mb-4">
                 <button
                   onClick={addCoreNetworkToMetaMask}
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 transform hover:scale-105 text-sm font-medium shadow-lg"
+                  className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all duration-300 text-sm font-medium shadow-lg"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Core Network to MetaMask</span>
