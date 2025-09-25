@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, X, AlertTriangle, Check } from 'lucide-react';
+import { Search, X, AlertTriangle, Check, Plus } from 'lucide-react';
 import { TOKENS, addCustomToken, removeCustomToken, DEFAULT_CUSTOM_TOKEN_LOGO } from '../config/tokens';
 import { Web3Service } from '../utils/web3';
 import { ethers } from 'ethers';
@@ -35,6 +35,7 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
   } | null>(null);
   const [showRemoveOption, setShowRemoveOption] = useState(false);
   const [tokenToRemove, setTokenToRemove] = useState<string | null>(null);
+  const [addingToMetaMask, setAddingToMetaMask] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -144,6 +145,32 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
       if (selectedToken === tokenToRemove) {
         onSelect('CORE');
       }
+    }
+  };
+
+  const addTokenToMetaMask = async (tokenSymbol: string) => {
+    const token = TOKENS[tokenSymbol];
+    if (!token || !window.ethereum) return;
+
+    setAddingToMetaMask(tokenSymbol);
+    
+    try {
+      await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: token.address,
+            symbol: token.symbol,
+            decimals: token.decimals,
+            image: token.logoUrl || DEFAULT_CUSTOM_TOKEN_LOGO,
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Error adding token to MetaMask:', error);
+    } finally {
+      setAddingToMetaMask(null);
     }
   };
 
@@ -303,6 +330,23 @@ const TokenSelector: React.FC<TokenSelectorProps> = ({
                     <div className="text-white">{symbol}</div>
                     <div className="text-xs text-gray-400">{TOKENS[symbol]?.name || symbol}</div>
                   </div>
+                  {window.ethereum && TOKENS[symbol]?.address !== ethers.ZeroAddress && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addTokenToMetaMask(symbol);
+                      }}
+                      disabled={addingToMetaMask === symbol}
+                      className="ml-auto p-1.5 text-gray-400 hover:text-blue-400 hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50"
+                      title="Add to MetaMask"
+                    >
+                      {addingToMetaMask === symbol ? (
+                        <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Plus className="w-4 h-4" />
+                      )}
+                    </button>
+                  )}
                 </button>
               ))}
             </div>
