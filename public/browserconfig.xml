@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square150x150logo src="https://photos.pinksale.finance/file/pinksale-logo-upload/1755538803220-7d493aae390e834e9654df6d97b11a99.jpg"/>
+            <square310x310logo src="https://photos.pinksale.finance/file/pinksale-logo-upload/1755538803220-7d493aae390e834e9654df6d97b11a99.jpg"/>
+            <TileColor>#F5A623</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig>

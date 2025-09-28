@@ -1,0 +1,29 @@
+{
+  "name": "FalcoX Swap - Advanced DeFi Trading Platform",
+  "short_name": "FalcoX",
+  "description": "Premier decentralized exchange on Core Blockchain with trading, staking, farming, and DeFi tools",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#F5A623",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://photos.pinksale.finance/file/pinksale-logo-upload/1755538803220-7d493aae390e834e9654df6d97b11a99.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://photos.pinksale.finance/file/pinksale-logo-upload/1755538803220-7d493aae390e834e9654df6d97b11a99.jpg",
+      "sizes": "512x512", 
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "business", "productivity"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false
+}
