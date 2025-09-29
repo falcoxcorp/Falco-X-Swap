@@ -672,6 +672,35 @@ const Trade: React.FC<TradeProps> = ({
     </motion.button>
   );
 
+  const calculateAutoSlippage = useCallback(async () => {
+  if (!fromAmount || !tokenData?.liquidity) return;
+  try {
+    const amountIn = parseFloat(fromAmount);
+    if (isNaN(amountIn) || amountIn <= 0) return;
+
+    const reserveIn = parseFloat(tokenData.liquidity.base);
+    const reserveOut = parseFloat(tokenData.liquidity.quote);
+
+    if (reserveIn <= 0 || reserveOut <= 0) return;
+
+    // Simple price impact formula
+    const inputWithFee = amountIn * 0.997; // assuming 0.3% fee
+    const outputAmount = (inputWithFee * reserveOut) / (reserveIn + inputWithFee);
+
+    const marketPrice = reserveOut / reserveIn;
+    const executionPrice = amountIn / outputAmount;
+    const priceImpact = (executionPrice / marketPrice - 1) * 100;
+
+    // Add small buffer (0.5%) and clamp between 0.5% - 50%
+    const newSlippage = Math.min(Math.max(priceImpact + 0.5, 0.5), 50);
+
+    setSlippage(newSlippage.toFixed(2));
+  } catch (error) {
+    console.error('Error calculating slippage:', error);
+  }
+}, [fromAmount, tokenData]);
+
+
   // Token button component
   const TokenButton: React.FC<{token: string, onClick: () => void}> = ({ token, onClick }) => (
     <motion.button
@@ -1167,9 +1196,12 @@ const Trade: React.FC<TradeProps> = ({
               slippage={slippage}
               deadline={deadline}
               expertMode={expertMode}
+              fromAmount={fromAmount}
+              tokenData={tokenData}
               onSlippageChange={setSlippage}
               onDeadlineChange={setDeadline}
               onExpertModeChange={setExpertMode}
+              calculateAutoSlippage={calculateAutoSlippage}
             />
 
             <WalletModal
