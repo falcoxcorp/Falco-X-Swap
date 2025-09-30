@@ -657,7 +657,7 @@ export class Web3Service {
       };
 
       const feeData = await this.provider.getFeeData();
-      const gasPrice = feeData.gasPrice || (await this.provider.getGasPrice());
+      const gasPrice = ethers.parseUnits('30', 'gwei'); // Fixed 30 GWEI
 
       let tx;
       let receipt;
@@ -912,7 +912,7 @@ export class Web3Service {
       const parsedToken1Min = ethers.parseUnits(roundedToken1Min, token1.decimals || 18);
 
       const feeData = await this.provider.getFeeData();
-      const gasPrice = feeData.gasPrice || (await this.provider.getGasPrice());
+      const gasPrice = ethers.parseUnits('30', 'gwei'); // Fixed 30 GWEI
 
       let tx;
       let receipt;
@@ -1061,7 +1061,7 @@ export class Web3Service {
       const parsedToken1Min = ethers.parseUnits(roundedToken1Min, token1.decimals || 18);
 
       const feeData = await this.provider.getFeeData();
-      const gasPrice = feeData.gasPrice || (await this.provider.getGasPrice());
+      const gasPrice = ethers.parseUnits('30', 'gwei'); // Fixed 30 GWEI
 
       const pairContract = new ethers.Contract(pairAddress, PAIR_ABI, this.signer);
       const currentAllowance = await pairContract.allowance(this.userAddress, CONTRACTS.ROUTER);
