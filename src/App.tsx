@@ -132,13 +132,7 @@ function App() {
     {
       icon: Layers,
       label: 'Create Staking',
-     comingSoon: true,
-      hasSubmenu: true,
-      submenu: [
-        { icon: Blocks, label: 'Create Staking Pool', onClick: () => setCurrentView('create-staking') },
-        { icon: Blocks, label: 'Staking Pools', onClick: () => setCurrentView('staking-pools') },
-        { icon: Blocks, label: 'Admin Stakings', onClick: () => setCurrentView('admin-stakings') },
-      ],
+      externalLink: 'https://stakingtools.falcox.net/',
     },
     {
       icon: RocketIcon,
